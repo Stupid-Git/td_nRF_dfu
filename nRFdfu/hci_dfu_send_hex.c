@@ -16,7 +16,7 @@ extern "C" uint16_t crc16_compute(uint8_t * p_data, uint16_t size, uint16_t * p_
 #include "W_Nrf51Hex.h"
 static nRFhex_t gx_NRFHEX0;
 
-#include "W_ihexLoadToMem.h"
+#include "W_ihex_LoadToMem.h"
 
 #define GXIMAGE_BUFFER_CAPACITY 0x8000
 static uint8_t m_gxImage_buffer[GXIMAGE_BUFFER_CAPACITY];
@@ -621,7 +621,7 @@ void Controller_upload_firmware(void)
     m_gxImage = &m_gxImage0;
     m_gxImage->gx_bin = m_gxImage_buffer;
     m_gxImage->gx_binCapacity = GXIMAGE_BUFFER_CAPACITY; //OR  m_gxImage->gx_binCapacity = sizeof(m_gxImage_buffer);    
-    r = W_ihexLoadToMem( m_gxImage, "C:/ble_nrf51/tandd/nrf51/examples/ble_peripheral/ble_app_K2/pca10028/s110/arm4/_build/nrf51422_xxac_s110.hex" );
+    r = W_ihex_LoadToMem( m_gxImage, "C:/ble_nrf51/tandd/nrf51/examples/ble_peripheral/ble_app_K2/pca10028/s110/arm4/_build/nrf51422_xxac_s110.hex" );
     if( r != 0)
     {
         return;

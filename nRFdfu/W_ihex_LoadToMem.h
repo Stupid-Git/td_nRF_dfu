@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "cintelhex.h"
+#include "../src/cintelhex.h"
 
 #if defined __cplusplus
 extern "C" {
@@ -25,7 +25,7 @@ typedef struct W_ihexMemImage_s
             
 } W_ihexMemImage_t;
 
-int32_t W_ihexLoadToMem( W_ihexMemImage_t *pI, char* filename );
+int32_t W_ihex_LoadToMem( W_ihexMemImage_t *pI, char* filename );
 
 #if defined __cplusplus
 }

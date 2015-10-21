@@ -670,11 +670,13 @@ namespace dfu {
 
     private:
 
-        uint32_t baudRate;
+
         char* fileName;
         uint32_t Hexfile_type;
         char* ComportName;
+        uint32_t baudRate;
         uint32_t flowControl;
+
         //REF http://www.codeproject.com/Articles/442784/Best-gotchas-of-Cplusplus-CLI#marshal_context
         System::Void btnProgram_Click(System::Object^  sender, System::EventArgs^  e)
         {

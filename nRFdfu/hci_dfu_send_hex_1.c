@@ -81,7 +81,7 @@ void  packetList_DestroyEntries(packetList_t packetList)
 #include "W_Nrf51Hex.h"
 static nRFhex_t m_NRFHEX_BOGUS;
 
-#include "W_ihexLoadToMem.h"
+#include "W_ihex_LoadToMem.h"
 
 #define GXIMAGE_BUFFER_CAPACITY 0x8000
 static uint8_t m_gxImage_buffer[GXIMAGE_BUFFER_CAPACITY];
@@ -93,6 +93,11 @@ static W_ihexMemImage_t* m_gxImage;
 
 uint8_t * int32_to_bytes(uint32_t nr);
 uint32_t word_align(uint32_t a, uint32_t b);
+uint32_t word_align(uint32_t a, uint32_t b)
+{
+    return (((a) + (b - 1)) &~(b - 1));
+}
+
 uint8_t * int16_to_bytes(uint32_t nr);
 
 //*****************************************************************************
@@ -191,7 +196,7 @@ int Controller_percentage(int part, int whole)
 }
 
 
-buf32_t * G_decode_esc_chars(buf32_t * data)
+buf32_t* buf32_decode_esc_chars(buf32_t * data)
 {
 
     //'''Replace 0xDBDC with 0xCO and 0xDBDD with 0xDB'''
@@ -228,7 +233,7 @@ buf32_t * G_decode_esc_chars(buf32_t * data)
                 else
                 {
                     //raise Exception('Char 0xDB NOT followed by 0xDC or 0xDD');
-                    printf("G_decode_esc_chars: Exception: Char 0xDB NOT followed by 0xDC or 0xDD \n");
+                    printf("buf32_decode_esc_chars: Exception: Char 0xDB NOT followed by 0xDC or 0xDD \n");
                     return(0);
                 }
         }
@@ -239,7 +244,7 @@ buf32_t * G_decode_esc_chars(buf32_t * data)
     }
     return result;
     /*
-    def G_decode_esc_chars(data):
+    def decode_esc_chars(data):
         '''Replace 0xDBDC with 0xCO and 0xDBDD with 0xDB'''
         result = []
         while len(data):
@@ -341,7 +346,7 @@ int Controller_get_ack_nr_NW(Uart_NW_t* uart)
     //read until you get a new C0
     //RESUME_WORK
     buf32_print("\nController_get_ack_nr", &uart_buffer);
-    data = G_decode_esc_chars(&uart_buffer);
+    data = buf32_decode_esc_chars(&uart_buffer);
 
     /*
     // Remove 0xC0 at start and beginning
@@ -377,7 +382,7 @@ int Controller_get_ack_nr_NW(Uart_NW_t* uart)
     }
     //read until you get a new C0
     //RESUME_WORK
-    data = G_decode_esc_chars(uart_buffer);
+    data = decode_esc_chars(uart_buffer);
 
     // Remove 0xC0 at start and beginning
     data = data[1:-1];
@@ -876,7 +881,7 @@ void Controller_upload_firmware_1(void)
     m_gxImage = &m_gxImage0;
     m_gxImage->gx_bin = m_gxImage_buffer;
     m_gxImage->gx_binCapacity = GXIMAGE_BUFFER_CAPACITY; //OR  m_gxImage->gx_binCapacity = sizeof(m_gxImage_buffer);    
-    r = W_ihexLoadToMem( m_gxImage, "C:/ble_nrf51/tandd/nrf51/examples/ble_peripheral/ble_app_K2/pca10028/s110/arm4/_build/nrf51422_xxac_s110.hex" );
+    r = W_ihex_LoadToMem( m_gxImage, "C:/ble_nrf51/tandd/nrf51/examples/ble_peripheral/ble_app_K2/pca10028/s110/arm4/_build/nrf51422_xxac_s110.hex" );
     if( r != 0)
     {
         return;

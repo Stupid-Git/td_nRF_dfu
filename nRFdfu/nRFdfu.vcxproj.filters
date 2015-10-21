@@ -2,23 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="hci_dfu_send_hex_1.c" />
-    <ClCompile Include="dfu_W.cpp" />
     <ClCompile Include="dfu_MyStuff.cpp" />
     <ClCompile Include="my_dfu.c" />
     <ClCompile Include="my_dfuTrans_serial_NW.c" />
     <ClCompile Include="my_dfu_main.c" />
     <ClCompile Include="my_dfu_program.c" />
     <ClCompile Include="dfu_transports.c" />
-    <ClCompile Include="dfu_W_Form.cpp" />
     <ClCompile Include="hci_dfu_send_hex.c" />
-    <ClCompile Include="ihex_copy.c" />
-    <ClCompile Include="ihex_parse.c" />
-    <ClCompile Include="ihex_record.c" />
     <ClCompile Include="my_dfu_serial_medium.c" />
     <ClCompile Include="my_dfu_transport_serial.c" />
-    <ClCompile Include="py_dfu.c" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="W_ihexLoadToMem.c" />
     <ClCompile Include="W_Nrf51Hex.c" />
     <ClCompile Include="W_serialFlash.c" />
     <ClCompile Include="W_slip.c" />
@@ -34,20 +26,31 @@
     <ClCompile Include="AssemblyInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dfu_hci_packets.c">
+    <ClCompile Include="program.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_ref_py_dfu.c" />
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_hci_packets.c" />
+    <ClCompile Include="W_ihex_LoadToMem.c" />
+    <ClCompile Include="..\src\ihex_copy.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ihex_parse.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ihex_record.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dfu_hci_packets.h" />
     <ClInclude Include="my_dfu.h" />
     <ClInclude Include="my_dfu_program.h" />
-    <ClInclude Include="dfu_W_Form.h" />
     <ClInclude Include="my_dfu_serial_medium.h" />
     <ClInclude Include="my_dfu_transport.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="W_ihexLoadToMem.h" />
     <ClInclude Include="W_Nrf51Hex.h" />
     <ClInclude Include="W_serialFlash.h" />
     <ClInclude Include="W_slip.h" />
@@ -64,6 +67,13 @@
     <ClInclude Include="cIntelHex.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="W_ihex_LoadToMem.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="dfu_W_Form.resx" />

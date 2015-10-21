@@ -4,7 +4,7 @@
 #include "my_dfu_program.h"
 
 
-#include "W_ihexLoadToMem.h"
+#include "W_ihex_LoadToMem.h"
 #include <stdio.h>
 
 
@@ -180,7 +180,7 @@ int32_t test_1( char* filename )
     pI->gx_bin = sm_gxImage_buffer;
     pI->gx_binCapacity = sizeof(sm_gxImage_buffer); //GXIMAGE_BUFFER_CAPACITY
 
-    r = W_ihexLoadToMem( pI, filename );
+    r = W_ihex_LoadToMem( pI, filename );
     if( r != 0)
     {
         return(r);

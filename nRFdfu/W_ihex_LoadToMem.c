@@ -1,11 +1,11 @@
-#include "W_ihexLoadToMem.h"
+#include "W_ihex_LoadToMem.h"
 
 
 #include <stdio.h>
 
 extern "C" uint16_t crc16_compute(uint8_t * p_data, uint16_t size, uint16_t * p_crc);
 
-int32_t W_ihexLoadToMem( W_ihexMemImage_t *pI, char* filename )
+int32_t W_ihex_LoadToMem( W_ihexMemImage_t *pI, char* filename )
 {
     int i;
     uint16_t crc16;

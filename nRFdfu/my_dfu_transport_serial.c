@@ -214,7 +214,7 @@ bool serT_is_open(DfuTransport_t *pT)
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-static buf32_t * G_decode_esc_chars(buf32_t * data)
+static buf32_t* buf32_decode_esc_chars(buf32_t * data)
 {
 
     //'''Replace 0xDBDC with 0xCO and 0xDBDD with 0xDB'''
@@ -251,7 +251,7 @@ static buf32_t * G_decode_esc_chars(buf32_t * data)
                 else
                 {
                     //raise Exception('Char 0xDB NOT followed by 0xDC or 0xDD');
-                    printf("G_decode_esc_chars: Exception: Char 0xDB NOT followed by 0xDC or 0xDD \n");
+                    printf("buf32_decode_esc_chars: Exception: Char 0xDB NOT followed by 0xDC or 0xDD \n");
                     return(0);
                 }
         }
@@ -262,7 +262,7 @@ static buf32_t * G_decode_esc_chars(buf32_t * data)
     }
     return result;
     /*
-    def G_decode_esc_chars(data):
+    def decode_esc_chars(data):
         '''Replace 0xDBDC with 0xCO and 0xDBDD with 0xDB'''
         result = []
         while len(data):
@@ -375,7 +375,7 @@ static int get_ack_nr(DfuTransport_t *P)
     //read until you get a new C0
     //RESUME_WORK
     buf32_print("\nController_get_ack_nr", &uart_buffer);
-    data = G_decode_esc_chars(&uart_buffer);
+    data = buf32_decode_esc_chars(&uart_buffer);
 
     /*
     // Remove 0xC0 at start and beginning
@@ -411,7 +411,7 @@ static int get_ack_nr(DfuTransport_t *P)
     }
     //read until you get a new C0
     //RESUME_WORK
-    data = G_decode_esc_chars(uart_buffer);
+    data = decode_esc_chars(uart_buffer);
 
     // Remove 0xC0 at start and beginning
     data = data[1:-1];
@@ -737,7 +737,7 @@ static int get_ack_nr_UW_SLIP(DfuTransport_t *P)
 
 
     buf32_print("get_ack_nr_UW_SLIP", &uart_buffer);
-    data = G_decode_esc_chars(&uart_buffer);
+    data = buf32_decode_esc_chars(&uart_buffer);
     buf32_print("get_ack_nr_UW_SLIP --Non SLIP data ---", data);
 
     /*
