@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="hci_dfu_send_hex_1.c" />
+    <ClCompile Include="dfu_W.cpp" />
+    <ClCompile Include="dfu_MyStuff.cpp" />
+    <ClCompile Include="my_dfu.c" />
+    <ClCompile Include="my_dfuTrans_serial_NW.c" />
+    <ClCompile Include="my_dfu_main.c" />
+    <ClCompile Include="my_dfu_program.c" />
+    <ClCompile Include="dfu_transports.c" />
+    <ClCompile Include="dfu_W_Form.cpp" />
+    <ClCompile Include="hci_dfu_send_hex.c" />
+    <ClCompile Include="ihex_copy.c" />
+    <ClCompile Include="ihex_parse.c" />
+    <ClCompile Include="ihex_record.c" />
+    <ClCompile Include="my_dfu_serial_medium.c" />
+    <ClCompile Include="my_dfu_transport_serial.c" />
+    <ClCompile Include="py_dfu.c" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="W_ihexLoadToMem.c" />
+    <ClCompile Include="W_Nrf51Hex.c" />
+    <ClCompile Include="W_serialFlash.c" />
+    <ClCompile Include="W_slip.c" />
+    <ClCompile Include="..\src\myutils.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UartSerial\uart_NW.c">
+      <Filter>src\UartSerial</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_Form.cpp">
+      <Filter>Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_hci_packets.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dfu_hci_packets.h" />
+    <ClInclude Include="my_dfu.h" />
+    <ClInclude Include="my_dfu_program.h" />
+    <ClInclude Include="dfu_W_Form.h" />
+    <ClInclude Include="my_dfu_serial_medium.h" />
+    <ClInclude Include="my_dfu_transport.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="W_ihexLoadToMem.h" />
+    <ClInclude Include="W_Nrf51Hex.h" />
+    <ClInclude Include="W_serialFlash.h" />
+    <ClInclude Include="W_slip.h" />
+    <ClInclude Include="..\src\myutils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UartSerial\uart_xx.h">
+      <Filter>src\UartSerial</Filter>
+    </ClInclude>
+    <ClInclude Include="dfu_MyStuff.h" />
+    <ClInclude Include="dfu_Form.h">
+      <Filter>Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="cIntelHex.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="dfu_W_Form.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{e9e68e22-c682-4469-965e-5e543290ae58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\UartSerial">
+      <UniqueIdentifier>{d9a73910-b090-4a44-b964-617c101e5bf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Forms">
+      <UniqueIdentifier>{f0c6995f-9dca-489a-8ce8-eb993df99299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{6c9a13c9-499d-4134-a89f-cedf2084f066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{468c419f-3f98-430f-bbc9-ebed8ce4a5cd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

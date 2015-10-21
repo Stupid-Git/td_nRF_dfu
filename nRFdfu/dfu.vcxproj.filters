@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UartSerial">
+      <UniqueIdentifier>{4802a183-d7b4-45e4-ab12-d403f202b4ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dfu_W_Form.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UartSerial\uart_xx.h">
+      <Filter>UartSerial</Filter>
+    </ClInclude>
+    <ClInclude Include="W_ihexLoadToMem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cIntelHex.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="W_Nrf51Hex.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="W_serialFlash.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="W_slip.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\maikon_sim\myutils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dfu_MyStuff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dfu_hci_packets.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_dfu_program.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_dfu.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_dfu_transport.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_dfu_serial_medium.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_W_Form.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UartSerial\uart_NW.c">
+      <Filter>UartSerial</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_transports.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hci_dfu_send_hex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="W_ihexLoadToMem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ihex_copy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ihex_parse.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ihex_record.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="W_Nrf51Hex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="W_serialFlash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="W_slip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\maikon_sim\myutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_hci_packets.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_W.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="py_dfu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dfu_MyStuff.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_dfu_program.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hci_dfu_send_hex_1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_dfu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_dfu_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_dfu_transport_serial.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_dfuTrans_serial_NW.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_dfu_serial_medium.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+</Project>

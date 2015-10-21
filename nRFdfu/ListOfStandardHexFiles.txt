@@ -1,0 +1,8 @@
+
+
+
+Softdevice C:/ble_nrf51/nRF51_SDK/components/softdevice/s110/hex/s110_softdevice.hex programmed successfully
+
+Application C:/ble_nrf51/tandd/nrf51/examples/ble_peripheral/ble_app_K2/pca10028/s110/arm4/_build/nrf51422_xxac_s110.hex programmed successfully
+
+Bootloader C:/ble_nrf51/nRF51_SDK/examples/dfu/hci_dfu_send_hex/test_images_dual_bank_update/dfu_test_bootloader_b_hci.hex programmed successfully
