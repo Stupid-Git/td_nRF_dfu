@@ -20,7 +20,7 @@ typedef struct W_ihexMemImage_s
     uint32_t _gx_size;
     uint32_t gx_start;
     uint32_t gx_stop;
-    uint32_t gx_len;
+    uint32_t image_length;
     uint16_t gx_crc;
             
 } W_ihexMemImage_t;

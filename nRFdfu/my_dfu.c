@@ -481,7 +481,7 @@ int32_t _dfu_send_image(Dfu_t *pD, int program_mode, class_Firmware_t *firmware_
         return(-1);
     }
 
-    r = pT->open(pT);
+    r = pT->open(pT); //TODO this initialisation (e.g. put RTR500BLE into program mode [SET_DEVICE_DFU_MODE_ON]) should be done here
     if(r != 0) {return(r);}
 
     r = self_wait_while_opening_transport(pD);
@@ -593,8 +593,7 @@ int32_t _dfu_send_image(Dfu_t *pD, int program_mode, class_Firmware_t *firmware_
     printf("0\n");
 
     pT->SET_DEVICE_DFU_MODE_OFF(pT);
-
-    pT->close(pT);
+    pT->close(pT);  //TODO this DEinitialisation (e.g. put RTR500BLE into Normal mode [SET_DEVICE_DFU_MODE_OFF]) should be done here
 
     return(r);
 }

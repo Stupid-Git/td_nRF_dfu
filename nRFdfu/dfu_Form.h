@@ -233,6 +233,7 @@ namespace dfu {
             this->tbFilename->Name = L"tbFilename";
             this->tbFilename->Size = System::Drawing::Size(576, 19);
             this->tbFilename->TabIndex = 16;
+            this->tbFilename->TextChanged += gcnew System::EventHandler(this, &dfu_Form::tbFilename_TextChanged);
             // 
             // label1
             // 
@@ -242,6 +243,7 @@ namespace dfu {
             this->label1->Size = System::Drawing::Size(83, 12);
             this->label1->TabIndex = 15;
             this->label1->Text = L"DFU /Hex File:";
+            this->label1->Click += gcnew System::EventHandler(this, &dfu_Form::label1_Click);
             // 
             // btnBrowse
             // 
@@ -704,5 +706,9 @@ namespace dfu {
         
 
 
+private: System::Void tbFilename_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+         }
+private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
+         }
 };
 }

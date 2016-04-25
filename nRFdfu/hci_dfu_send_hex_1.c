@@ -724,7 +724,7 @@ void hci_dfu_binary_to_packetList_1(void)
     //---------------------------------------------------------------
     //-----
     pBinImage = m_gxImage->gx_bin;
-    binImageLength = m_gxImage->gx_len;
+    binImageLength = m_gxImage->image_length;
 
     //---------------------------------------------------------------
     //---------------------------------------------------------------
@@ -732,7 +732,7 @@ void hci_dfu_binary_to_packetList_1(void)
     crc = 0xFFFF;
     bin_image_crc = crc16_compute(pBinImage, binImageLength, &crc);
     printf("\n");
-    printf("(gx_stop - gx_start) gx_len = %d (0x%x), crc=%04x \n", binImageLength, binImageLength, bin_image_crc);
+    printf("(gx_stop - gx_start) image_length = %d (0x%x), crc=%04x \n", binImageLength, binImageLength, bin_image_crc);
 
     packetCount = 0;
     packetCount = binImageLength / 512;

@@ -16,7 +16,10 @@ namespace nRFdfu_cs
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new FormSimple());
+            //Application.Run(new FormRTR500BLE());
+            //Application.Run(new Form1());
+            
         }
     }
 }

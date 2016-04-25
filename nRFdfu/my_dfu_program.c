@@ -187,11 +187,11 @@ int32_t test_1( char* filename )
     }
 
     printf("=== test_1 ===\n");
-    printf("   Binary length = 0x%04x, %5d\n", pI->gx_len, pI->gx_len );
+    printf("   Binary length = 0x%04x, %5d\n", pI->image_length, pI->image_length );
     printf("   Binary   CRC  = 0x%04x, %5d\n", pI->gx_crc, pI->gx_crc );
     printf("\n");
 
-    r = test_1_save_bin_to_file("dfu_test_bin.bin", pI->gx_bin, pI->gx_len );
+    r = test_1_save_bin_to_file("dfu_test_bin.bin", pI->gx_bin, pI->image_length );
     if( r != 0)
     {
         return(r);

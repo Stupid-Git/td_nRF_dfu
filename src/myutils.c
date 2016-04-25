@@ -129,6 +129,7 @@ int32_t cb16_clear( cb16_t*cb )
 {
     cb->rdPtr = 0;
     cb->wrPtr = 0;
+    cb->length = 0;
     return(0);
 }
 
@@ -286,7 +287,7 @@ uint16_t crc16_compute(uint8_t * p_data, uint16_t size, uint16_t * p_crc)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #include <Windows.h>
-void time_sleep(float time_in_seconds)
+void time_sleep(float time_in_seconds) //time.sleep
 {
     uint32_t time_in_milliseconds;
 

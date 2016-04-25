@@ -12,7 +12,9 @@
 //*****************************************************************************
 //*****************************************************************************
 //*****************************************************************************
-
+// HCI packet format
+//http://developer.nordicsemi.com/nRF51_SDK/nRF51_SDK_v8.x.x/doc/8.0.0/s110/html/a00102.html
+//
 static uint8_t* bytePtr_parts_to_four_bytes(uint32_t seq, uint32_t dicp, uint32_t rel, uint32_t pkt_type, uint32_t pkt_len)
 {
     static uint8_t ints[4];

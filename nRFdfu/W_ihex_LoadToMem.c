@@ -55,42 +55,30 @@ int32_t W_ihex_LoadToMem( W_ihexMemImage_t *pI, char* filename )
     rv = ihex_mem_copy_from_offset(rs, pI->gx_bin, offset, count, IHEX_WIDTH_8BIT, IHEX_ORDER_BIGENDIAN);
     printf("  ihex_mem_copy_from_offset() rv = %d\n", rv);
 
-    /* testing
-    offset = 0x08;
-    count = 0x10;
-    rv = ihex_mem_copy_from_offset(rs, pI->gx_bin, offset, count, IHEX_WIDTH_8BIT, IHEX_ORDER_BIGENDIAN);
-    printf("rv = %d\n", rv);
 
-    offset = 0x2744;
-    count = 0x100;
-    rv = ihex_mem_copy_from_offset(rs, pI->gx_bin, offset, count, IHEX_WIDTH_8BIT, IHEX_ORDER_BIGENDIAN);
-    printf("rv = %d\n", rv);
-    */
-
-    /**/
+    /*
     //testing - start
-    pI->gx_len = pI->_gx_size - 7;
+    pI->image_length = pI->_gx_size - 7;
     for( i=0 ; i< 10 ; i++)
     {
-        pI->gx_len++;
+        pI->image_length++;
         crc16 = 0xFFFF;
-        crc16 = crc16_compute(pI->gx_bin, pI->gx_len, &crc16);
-        printf("                       gx_len = %d (0x%x), data = 0x%02x,  crc16=%04x \n", pI->gx_len, pI->gx_len, pI->gx_bin[pI->gx_len], crc16);
+        crc16 = crc16_compute(pI->gx_bin, pI->image_length, &crc16);
+        printf("                       image_length = %d (0x%x), data = 0x%02x,  crc16=%04x \n", pI->image_length, pI->image_length, pI->gx_bin[pI->image_length], crc16);
     }
     //testing - start
-    /**/
+    */
 
 
     // real
-    pI->gx_len = pI->gx_stop - pI->gx_start;
+    pI->image_length = pI->gx_stop - pI->gx_start;
     crc16 = 0xFFFF;
-    crc16 = crc16_compute(pI->gx_bin, pI->gx_len, &crc16);
+    crc16 = crc16_compute(pI->gx_bin, pI->image_length, &crc16);
     pI->gx_crc = crc16;
     printf("\n");
-    printf("  (gx_stop - gx_start) gx_len = %d (0x%x), data = 0x%02x,  crc16=%04x \n", pI->gx_len, pI->gx_len, pI->gx_bin[pI->gx_len], pI->gx_crc);
+    printf("                       image_length = %d (0x%x), data = 0x%02x,  crc16=%04x \n", pI->image_length, pI->image_length, pI->gx_bin[pI->image_length], pI->gx_crc);
     printf("\n");
 
-    //free(dst);
 
     return(0);
 }

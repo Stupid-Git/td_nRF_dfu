@@ -44,6 +44,7 @@
     <ClCompile Include="..\src\ihex_record.c">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="hci_dfu_send_hex_SEGI.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dfu_hci_packets.h" />
@@ -76,7 +77,7 @@
     <ClInclude Include="W_ihex_LoadToMem.h" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="dfu_W_Form.resx" />
+    <EmbeddedResource Include="dfu_Form.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

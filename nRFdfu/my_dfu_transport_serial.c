@@ -119,8 +119,8 @@ int32_t serT_open(DfuTransport_t *pT)
     //int32_t uartRet;
     //Uart_NW_t  uart0;
     //Uart_NW_t* p_uart;
-  //int32_t  Controller_com_port_num = 56;   //NW board serial_medium_NW_instance
-    int32_t  Controller_com_port_num = 61;   //UW board serial_medium_UW_instance
+  //int32_t  Controller_com_port_num = 56;   //NW board serial_medium_NW_instance    COM56 nRF PROTO
+    int32_t  Controller_com_port_num = 61;   //UW board serial_medium_UW_instance    COM61 RTR500BLE
     uint32_t m_Controller_baud_rate = 500000; //38400;
     
     //p_uart = &uart0;
@@ -690,12 +690,9 @@ bool recvCommand(DfuTrans_Serial_t *self, uint8_t *rData, uint32_t *rLength)
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-static  uint32_t  m_SLIP_rLength;
 static  uint8_t   m_SLIP_rData[4096];
+static  uint32_t  m_SLIP_rLength;
 
-static  uint8_t*  m_SLIP_r_buffer;
-static  uint32_t  m_SLIP_r_length;
-static  uint32_t  m_SLIP_r_pos;
 
 
 static int get_ack_nr_UW_SLIP(DfuTransport_t *P)
@@ -705,7 +702,7 @@ static int get_ack_nr_UW_SLIP(DfuTransport_t *P)
     buf32_t*  data;
 
     uart_buffer.buffer = &m_SLIP_rData[5];
-    uart_buffer.length = m_SLIP_r_length;
+    uart_buffer.length = m_SLIP_rLength;
 
     uint32_t  r_serDev;
     uint32_t  posC0_0;
@@ -766,6 +763,9 @@ uint32_t send_packet_UW_SLIP(DfuTrans_Serial_t *self, uint8_t* buffer, uint32_t 
     uint32_t r;
     uint8_t sData[4096];
     int reloop;
+
+    uint32_t  SLIP_rLength;
+
     //DfuTrans_Serial_t *self;
     //self = (DfuTrans_Serial_t*)P;
 
@@ -787,12 +787,11 @@ uint32_t send_packet_UW_SLIP(DfuTrans_Serial_t *self, uint8_t* buffer, uint32_t 
         memcpy(&sData[5], buffer, length);
 
         memset(m_SLIP_rData, 0, sizeof(m_SLIP_rData));
-        m_SLIP_r_buffer = &m_SLIP_rData[5];
-        m_SLIP_r_length = 0;
-        m_SLIP_r_pos = 0;
+        m_SLIP_rLength = 0;
 
         sendCommand(self, sData, 5 + length);
-        if (recvCommand(self, m_SLIP_rData, &m_SLIP_rLength) == false)
+        SLIP_rLength = 0;
+        if (recvCommand(self, m_SLIP_rData, &SLIP_rLength) == false) //SLIP_rLength UNUSED
         {
             printf("send_packet_UW_SLIP: 受信異常\r\n");
             *p_dwBytesWritten = 0;
@@ -808,7 +807,7 @@ uint32_t send_packet_UW_SLIP(DfuTrans_Serial_t *self, uint8_t* buffer, uint32_t 
             else
             {
                 printf("send_packet_UW_SLIP: OK\r\n");
-                m_SLIP_r_length = BitConverter_D_ToUInt16( m_SLIP_rData, 3);
+                m_SLIP_rLength = BitConverter_D_ToUInt16( m_SLIP_rData, 3);
                 *p_dwBytesWritten = length;
                 r = 0;
                 reloop = 0;
@@ -939,10 +938,10 @@ static int send_recv_SET_DEVICE_DFU_MODE_ON(DfuTransport_t *P)
         delay(50);
 
         sData[0] = 0x01;
-        sData[1] = (uint8_t)CMD_nRF_MODE;
-        sData[2] = 0x01; //DFU_MODE sub command 1
-        sData[3] = (uint8_t)0x08;
-        sData[4] = (uint8_t)0x00;
+        sData[1] = (uint8_t)CMD_nRF_MODE;  // 0xE6
+        sData[2] = 0x01;                   // 0x01 (0ｘ00:開放 0ｘ01:確保) DFU_MODE sub command 1
+        sData[3] = (uint8_t)0x08;          // 0x08 len LSB
+        sData[4] = (uint8_t)0x00;          // 0x00 len MSB
 
         memcpy(&sData[5], password_user, 8);
 
@@ -961,6 +960,56 @@ static int send_recv_SET_DEVICE_DFU_MODE_ON(DfuTransport_t *P)
 
         //delay(42);
 
+/*---------------------------------------------------*/
+/*
+        sData[0] = 0x01;
+        sData[1] = (uint8_t)CMD_nRF_MODE;  // 0xE6
+        sData[2] = 0x02;                   // 0x02  //DFU_MODE sub command 2 - RESET, BOOT CONTROL
+        sData[3] = (uint8_t)0x02;          // 0x02 len LSB //ERROR-was-0x08
+        sData[4] = (uint8_t)0x00;          // 0x00 len MSB
+
+        sData[5] = (uint8_t)0x01;          // 0x01 RESET HIGH  
+        sData[6] = (uint8_t)0x00;          // 0x00 BOOT  LOW
+
+        sendCommand(self, sData, 5 + 2); //was 5 + 8
+        if (recvCommand(self, rData, &rLength) == false)
+        {
+            printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-LOW, BOOT-LOW : 受信異常\r\n");
+        }
+        else
+        {
+            if( rData[2] != 0x06)
+                printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-LOW, BOOT-LOW : DID NOT GET ACK\r\n");
+            printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-LOW, BOOT-LOW : OK\r\n");
+        }
+
+        delay(1000);
+
+        sData[0] = 0x01;
+        sData[1] = (uint8_t)CMD_nRF_MODE;  // 0xE6
+        sData[2] = 0x02;                   // 0x02  //DFU_MODE sub command 2 - RESET, BOOT CONTROL
+        sData[3] = (uint8_t)0x02;          // 0x02 len LSB //ERROR-was-0x08
+        sData[4] = (uint8_t)0x00;          // 0x00 len MSB
+
+        sData[5] = (uint8_t)0x01;          // 0x01 RESET HIGH  
+        sData[6] = (uint8_t)0x01;          // 0x01 BOOT  HIGH
+
+        sendCommand(self, sData, 5 + 2); //was 5 + 8
+        if (recvCommand(self, rData, &rLength) == false)
+        {
+            printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-LOW, BOOT-LOW : 受信異常\r\n");
+        }
+        else
+        {
+            if( rData[2] != 0x06)
+                printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-LOW, BOOT-LOW : DID NOT GET ACK\r\n");
+            printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-LOW, BOOT-LOW : OK\r\n");
+        }
+
+        delay(1000);
+*/
+/*---------------------------------------------------*/
+
         //===== STEP 2 - RESET-LOW, BOOT-LOW =====
         // ブレーク信号送出
         //sData[0] = 0x00;
@@ -968,21 +1017,15 @@ static int send_recv_SET_DEVICE_DFU_MODE_ON(DfuTransport_t *P)
         //delay(50);
 
         sData[0] = 0x01;
-        sData[1] = (uint8_t)CMD_nRF_MODE;
-        sData[2] = 0x02; //DFU_MODE sub command 2 - RESET, BOOT CONTROL
-        sData[3] = (uint8_t)0x08;
-        sData[4] = (uint8_t)0x00;
+        sData[1] = (uint8_t)CMD_nRF_MODE;  // 0xE6
+        sData[2] = 0x02;                   // 0x02  //DFU_MODE sub command 2 - RESET, BOOT CONTROL
+        sData[3] = (uint8_t)0x02;          // 0x02 len LSB //ERROR-was-0x08
+        sData[4] = (uint8_t)0x00;          // 0x00 len MSB
 
-        sData[5] = (uint8_t)0x00; //RESET
-        sData[6] = (uint8_t)0x00; //BOOT
-        //sData[7] = 0;
-        //sData[8] = 0;
-        //sData[9] = 0;
-        //sData[10] = 0;
-        //sData[11] = 0;
-        //sData[12] = 0;
+        sData[5] = (uint8_t)0x00;          // 0x00 RESET LOW  
+        sData[6] = (uint8_t)0x00;          // 0x00 BOOT  LOW
 
-        sendCommand(self, sData, 5 + 8);
+        sendCommand(self, sData, 5 + 2); //was 5 + 8
         if (recvCommand(self, rData, &rLength) == false)
         {
             printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-LOW, BOOT-LOW : 受信異常\r\n");
@@ -1003,14 +1046,15 @@ static int send_recv_SET_DEVICE_DFU_MODE_ON(DfuTransport_t *P)
         //delay(50);
 
         sData[0] = 0x01;
-        sData[1] = (uint8_t)CMD_nRF_MODE;
-        sData[2] = 0x02; //DFU_MODE sub command 2 - RESET, BOOT CONTROL
-        sData[3] = (uint8_t)0x08;
-        sData[4] = (uint8_t)0x00;
-        sData[5] = (uint8_t)0x01; //RESET
-        sData[6] = (uint8_t)0x00; //BOOT
+        sData[1] = (uint8_t)CMD_nRF_MODE;  // 0xE6
+        sData[2] = 0x02;                   // 0x02  //DFU_MODE sub command 2 - RESET, BOOT CONTROL
+        sData[3] = (uint8_t)0x02;          // 0x02 len LSB //ERROR-was-0x08
+        sData[4] = (uint8_t)0x00;          // 0x00 len MSB
 
-        sendCommand(self, sData, 5 + 8);
+        sData[5] = (uint8_t)0x01;          // 0x00 RESET HIGH
+        sData[6] = (uint8_t)0x00;          // 0x00 BOOT  LOW
+
+        sendCommand(self, sData, 5 + 2); //was 5 + 8
         if (recvCommand(self, rData, &rLength) == false)
         {
             printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-HIGH, BOOT-LOW : 受信異常\r\n");
@@ -1032,14 +1076,15 @@ static int send_recv_SET_DEVICE_DFU_MODE_ON(DfuTransport_t *P)
         //delay(50);
 
         sData[0] = 0x01;
-        sData[1] = (uint8_t)CMD_nRF_MODE;
-        sData[2] = 0x02; //DFU_MODE sub command 2 - RESET, BOOT CONTROL
-        sData[3] = (uint8_t)0x08;
-        sData[4] = (uint8_t)0x00;
-        sData[5] = (uint8_t)0x01; //RESET
-        sData[6] = (uint8_t)0x01; //BOOT
+        sData[1] = (uint8_t)CMD_nRF_MODE;  // 0xE6
+        sData[2] = 0x02;                   // 0x02  //DFU_MODE sub command 2 - RESET, BOOT CONTROL
+        sData[3] = (uint8_t)0x02;          // 0x02 len LSB //ERROR-was-0x08
+        sData[4] = (uint8_t)0x00;          // 0x00 len MSB
 
-        sendCommand(self, sData, 5 + 8);
+        sData[5] = (uint8_t)0x01;          // 0x00 RESET HIGH  
+        sData[6] = (uint8_t)0x01;          // 0x00 BOOT  HIGH
+
+        sendCommand(self, sData, 5 + 2); //was 5 + 8
         if (recvCommand(self, rData, &rLength) == false)
         {
             printf("send_recv_SET_DEVICE_DFU_MODE_ON: RESET-HIGH, BOOT-HIGH : 受信異常\r\n");
