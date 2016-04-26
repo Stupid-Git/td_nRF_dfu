@@ -206,7 +206,10 @@ namespace nRFdfu_cs
         public static void update_progress(int progress = 0, bool done = false, String log_message = "")
         {
             if (op_2 == null)
+            {
+                Console.WriteLine("<<UPDATE_PROGRESS>> {0}", String.Format("Progress = {0}" + " - " + log_message, progress));
                 return;
+            }
             string[] workerResult = new string[2];
             workerResult[0] = "update_progress";
             workerResult[1] = String.Format("Progress = {0}" + " - " + log_message, progress);
@@ -216,7 +219,10 @@ namespace nRFdfu_cs
         public static void error(String S)
         {
             if (op_2 == null)
+            {
+                Console.WriteLine("<<ERROR>> {0}", S);
                 return;
+            }
             string[] workerResult = new string[2];
             workerResult[0] = "error";
             workerResult[1] = S;
@@ -225,7 +231,10 @@ namespace nRFdfu_cs
         public static void debug(String S)
         {
             if (op_2 == null)
+            {
+                Console.WriteLine("<<DEBUG>> {0}", S);
                 return;
+            }
             string[] workerResult = new string[2];
             workerResult[0] = "debug";
             workerResult[1] = S;
@@ -234,7 +243,10 @@ namespace nRFdfu_cs
         public static void info(String S)
         {
             if (op_2 == null)
+            {
+                Console.WriteLine("<<INFO>> {0}", S);
                 return;
+            }
             string[] workerResult = new string[2];
             workerResult[0] = "info";
             workerResult[1] = S;
@@ -244,7 +256,10 @@ namespace nRFdfu_cs
         public static void log(String S)
         {
             if (op_2 == null)
+            {
+                Console.WriteLine("<<LOG>> {0}", S);
                 return;
+            }
             string[] workerResult = new string[2];
             workerResult[0] = "log";
             workerResult[1] = S;

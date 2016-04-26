@@ -28,7 +28,7 @@ namespace nRFdfu_cs
 
         Int32 baud_rate;
 
-        String own_address;// = own_address;
+        String own_address = "";// = own_address;
         String bond_info;// = bond_info;
 
         BtDevice myPeerDevice;
@@ -54,7 +54,7 @@ namespace nRFdfu_cs
         void log_message_handler(object sender, ValueEventArgs<string> e)
         {
             //""" Log function to be passed to the DLL. """
-            logger.log(String.Format("[Emulator] %s", e.Value));
+            logger.log(String.Format("[Emulator] {0}", e.Value)); // %s -> {0}
 
             string message = e.Value;
             if (message.Contains("Connected to"))
@@ -73,7 +73,7 @@ namespace nRFdfu_cs
             //AddToLog(string.Format("{0}", arguments.Value));
         }
 
-        void data_received_handler(Object sender, Nordicsemi.PipeDataEventArgs e)//(sender, e)
+        public virtual void data_received_handler(Object sender, Nordicsemi.PipeDataEventArgs e)//(sender, e)
         {
             //""" Callback for the DLL if any data is recieved from peer device. """
             System.Text.StringBuilder stringBuffer = new System.Text.StringBuilder();
@@ -116,7 +116,7 @@ namespace nRFdfu_cs
             }
         }
 
-        //REF
+        /*REF*/
         void meEv_OnConnectionUpdateRequest(object sender, ConnectionUpdateRequestEventArgs arguments)
         {
             Task.Factory.StartNew(() =>
@@ -130,6 +130,7 @@ namespace nRFdfu_cs
                 master.UpdateConnectionParameters(updateParams);
             });
         }
+        /**/
 
         void connection_update_handler(Object sender, ConnectionUpdateRequestEventArgs e)//(sender, e):
         {
@@ -151,47 +152,75 @@ namespace nRFdfu_cs
 
         void pipe_error_handler(Object sender, Nordicsemi.PipeErrorEventArgs e)//(sender, e):
         {
-            
             //""" Callback for the DLL if pipe errors occur. """
-            //TODO logger.log("Pipe error received on pipe {0}. ErrorCode = {1}".format(e.PipeNumber, e.ErrorCode))
+            logger.log(String.Format("Pipe error received on pipe {0}. ErrorCode = {1}", e.PipeNumber, e.ErrorCode));
             this.num_of_errors += 1;
         }
 
         void _wait_for_disconnect(int wait_for_disconnect_delay=0, int expected_disconnected_reason=0) //TODO params
         {
-        /*
-        """ Internal function that waits for N seconds for disconnected_handler
-        to be called, setting this.connected to false. Then, it will compare
-        disconnect reason against the expected. """
-        this.disconnect_event_expected = true
-        for i in range(50):
-            if this.connected:
-                time.sleep(0.1)
-                sys.stdout.write(".")
+            //""" Internal function that waits for N seconds for disconnected_handler
+            //to be called, setting this.connected to false. Then, it will compare
+            //disconnect reason against the expected. """
+            int i;
+            this.disconnect_event_expected = true;
+            for(i = 0; i<50 ; i++)
+            {
+                if (this.connected)
+                {
+                    System.Threading.Thread.Sleep(100); //time.sleep(0.1);
+                    Console.Write("."); //sys.stdout.write(".");
+                } else {
+                    //# Disconnect received. Check disconnect reason if needed.
+                    if (expected_disconnected_reason != 0) //None
+                    {
+                        if (expected_disconnected_reason != (int)(this.last_disconnect_reason))
+                        {
+                            logger.log(String.Format("Incorrect disconnect reason. Expected = {0} Received = {1}", expected_disconnected_reason, this.last_disconnect_reason));
+                            throw new  Exception(String.Format("Incorrect disconnect reason. Expected = {0} Received = {1}", expected_disconnected_reason, this.last_disconnect_reason));
+                        }
+                    }
+                    break;
+                }
+            }            
+            if( i == 50 )
+                throw new System.Exception("Peer device did not disconnect!");
+            
+            /*
+            """ Internal function that waits for N seconds for disconnected_handler
+            to be called, setting this.connected to false. Then, it will compare
+            disconnect reason against the expected. """
+            this.disconnect_event_expected = true
+            for i in range(50):
+                if this.connected:
+                    time.sleep(0.1)
+                    sys.stdout.write(".")
+                else:
+                    # Disconnect received. Check disconnect reason if needed.
+                    if (expected_disconnected_reason != None):
+                        if (expected_disconnected_reason != int(this.last_disconnect_reason)):
+                            logger.log("Incorrect disconnect reason. Expected = {0} Received = {1}".format(expected_disconnected_reason, this.last_disconnect_reason))
+                            raise(Exception("Incorrect disconnect reason. Expected = {0} Received = {1}".format(expected_disconnected_reason, this.last_disconnect_reason)))
+                    break
             else:
-                # Disconnect received. Check disconnect reason if needed.
-                if (expected_disconnected_reason != None):
-                    if (expected_disconnected_reason != int(this.last_disconnect_reason)):
-                        logger.log("Incorrect disconnect reason. Expected = {0} Received = {1}".format(expected_disconnected_reason, this.last_disconnect_reason))
-                        raise(Exception("Incorrect disconnect reason. Expected = {0} Received = {1}".format(expected_disconnected_reason, this.last_disconnect_reason)))
-                break
-        else:
-            raise(Exception("Peer device did not disconnect!"))
-        */
+                raise(Exception("Peer device did not disconnect!"))
+            */
         }
 
-        void _disconnect()
+        bool _disconnect()
         {
-        /*
-        """ Internal function for making device disconnect from peer device. """
-        this.disconnect_event_expected = true
-        return this.master.Disconnect()
-        */
+            //""" Internal function for making device disconnect from peer device. """
+            this.disconnect_event_expected = true;
+            return (this.master.Disconnect());
+            /*
+            """ Internal function for making device disconnect from peer device. """
+            this.disconnect_event_expected = true
+            return this.master.Disconnect()
+            */
         }
 
         BtDevice _discover_peer_named(String btle_address)
         {
-
             //""" Internal function which starts Master Emulator discovery, compare found devices against
             //name and address. If a match is found, return its address. """
             
@@ -216,12 +245,29 @@ namespace nRFdfu_cs
 
             }
             return peer_device;
-    
+
+            /*
+            """ Internal function which starts Master Emulator discovery, compare found devices against
+                name and address. If a match is found, return its address. """
+            peer_device = None
+
+            found_devices = self.master.DiscoverDevices()
+
+            if found_devices:
+                for device in found_devices:
+                    # print "device %r"%device.DeviceInfo
+                    print "Karel >>  " # karel just testing
+                    self.log_handler.log("Device address %r" % (device.DeviceAddress.Value))
+
+                    if btle_address == device.DeviceAddress.Value:
+                        peer_device = device
+                        break
+            return peer_device    
+            */
         }
 
         BtDevice _discover_peer_device()
-        {
-            
+        {            
             //""" Internal function that does 10 retries to find the peer device
             //with correct name and address. """            
             for( int i=0; i< 10; i++)
@@ -229,27 +275,34 @@ namespace nRFdfu_cs
                 BtDevice peerDevice = this._discover_peer_named(this.peer_device_address);
                 if(peerDevice != null)
                     return peerDevice;
-                else
-                {
-                    ; //raise(Exception("Peer device with address {0} not found".format(this.peer_device_address)))
-                    return(null);
-                }
             }
 
-            return(null); //compiler complains wo\ithout this.
+            throw new Exception( String.Format("Peer device with address {0} not found", this.peer_device_address) );
+            //return (null);
+
+            /*
+            """ Internal function that does 10 retries to find the peer device
+            with correct name and address. """
+            for i in range(10):
+                peerDevice = self._discover_peer_named(self.peer_device_address)
+                if peerDevice != None:
+                    return peerDevice
+            else:
+                raise(Exception("Peer device with address {0} not found".format(self.peer_device_address)))
+            */
+
         }
 
-        public void send_data(int pipe, byte [] msg, int count) //TODO params
+        public void send_data(int pipe, byte[] msg, int count) //count == retry count
         {
-            int i;
             //  """ Send data to peer device. """
             if( !this.connected )
                 return;
 
-            for( i = 0; i< count; i++)
+            for(int i = 0; i< count; i++)
             {
                 if( ! this.master.SendData(pipe, msg) )
-                    ; //TODO Throw Exception("Data could not be sent - failed!");
+                    throw new Exception("Data could not be sent - failed!");
             }
             /*
             """ Send data to peer device. """
@@ -262,7 +315,7 @@ namespace nRFdfu_cs
         }
 
 
-        void setup_service()
+        public virtual void setup_service()
         {
             //""" Function for setting up services.
             //If not no child class implements this function, service setup will be
@@ -273,7 +326,7 @@ namespace nRFdfu_cs
             this.service_setup_done = false;
         }
 
-        void set_local_data()
+        public virtual void set_local_data()
         {
             //""" Function for setting up local data.
             //If not no child class implements this function, nothing will be set up.
@@ -284,6 +337,7 @@ namespace nRFdfu_cs
 
         void restore_bond_info()
         {
+            logger.info("TODO: restore_bond_info");
         /*
         if not this.bond_info:
             return
@@ -313,6 +367,8 @@ namespace nRFdfu_cs
                 Console.WriteLine("TODO device = {0}", device);
                 //TODO if(emulator_filter in device)
                 //TODO     return device;
+                if( device.Contains( emulator_filter ) )
+                    return device;
             }
             return null;
         }
@@ -357,7 +413,8 @@ namespace nRFdfu_cs
 
                 if( emulator_device == null )
                 {
-                    ; //TODO raise Exception("Could not find emulator device");
+                    //raise Exception("Could not find emulator device");
+                    throw new System.Exception("Could not find emulator device");
                 }
 
                 this.master.SerialPortBaudRate = this.baud_rate;
@@ -413,7 +470,7 @@ namespace nRFdfu_cs
             }
             catch( Exception ex)
             {
-                logger.log(String.Format("[EXCEPTION] %s", ex));
+                logger.log(String.Format("[EXCEPTION] {0}", ex));
                 logger.log("Call stack:");
                 //tb = traceback.extract_tb(sys.exc_info()[2])
                 //for f in reversed(tb):
@@ -424,94 +481,69 @@ namespace nRFdfu_cs
             }
             return true;
 
-    /*
-        """ Function for doing discovery of the peer device, connect and
-            discover pipes. The function will also open the Master Emulator. """
-        try:
-            this.master = None
-            this.master = Nordicsemi.MasterEmulator()
-
-            this.master.LogMessage += this.log_message_handler
-            this.master.DataReceived += this.data_received_handler
-            this.master.Connected += this.connected_handler
-            this.master.Disconnected += this.disconnected_handler
-            this.master.PipeError += this.pipe_error_handler
-            this.master.ConnectionUpdateRequest += this.connection_update_handler
-
-            emulator_devices = this.master.EnumerateUsb(Nordicsemi.UsbDeviceType.AnyDevice)
-
-            emulator_device = this.filter_emulator_device(emulator_devices, emulator_filter)
-
-            if emulator_device is None:
-                raise Exception("Could not find emulator device")
-
-            this.master.SerialPortBaudRate = this.baud_rate
-
-            this.master.Open(emulator_device)
-
-            this.setup_service()
-
-            # Start Master Emulator
-            this.master.Run()
-
-            this.set_local_data()
-
-
-            if this.own_address:
-                byte_endianess_transformed_address = this.change_byte_endianess(this.own_address)
-                bt_device_address = Nordicsemi.BtDeviceAddress(byte_endianess_transformed_address)
-                this.master.SetBDAddress(bt_device_address)
-
-            this.restore_bond_info()
-
-            # Run discovery procedure
-            this.myPeerDevice = this._discover_peer_device()
-            logger.log("Found peer device")
-
-            # Connect and bond to peer device
-            conn_params = Nordicsemi.BtConnectionParameters()
-            conn_params.ConnectionIntervalMs = 15
-            if this.master.Connect(this.myPeerDevice.DeviceAddress):
-                logger.log("--- Connected ---")
-            else:
-                raise(Exception("Connection failed"))
-
-            if this.service_setup_done:
-                # Service discovery
-                found_pipes = this.master.DiscoverPipes()
-
-                print "PIPES RETURN VALUE: %s" % found_pipes
-
-                if not found_pipes:
-                    return false
-
-                logger.log("--- Pipes discovered ---")
-
-        except Exception, ex:
-            logger.log("[EXCEPTION] %s" % ex)
-            logger.log("Call stack:")
-            tb = traceback.extract_tb(sys.exc_info()[2])
-            for f in reversed(tb):
-                logger.log("  File {0}, line {1}".format(os.path.basename(f[0]), f[1]))
-            this.num_of_errors += 1
-            logger.log("number of errors: %i" % this.num_of_errors)
-            return false
-
-        return true
-        */
-            return true;
-        }
-
-        void disconnect()
-        {
-        /*
-        """ Function for disconnecting from peer device and close the
-        Master Emulator if opened. """
-        if this.connected:
+            /*
+            """ Function for doing discovery of the peer device, connect and
+                discover pipes. The function will also open the Master Emulator. """
             try:
-                logger.log("Will disconnect now")
-                this._disconnect()
-                this._wait_for_disconnect()
+                this.master = None
+                this.master = Nordicsemi.MasterEmulator()
+
+                this.master.LogMessage += this.log_message_handler
+                this.master.DataReceived += this.data_received_handler
+                this.master.Connected += this.connected_handler
+                this.master.Disconnected += this.disconnected_handler
+                this.master.PipeError += this.pipe_error_handler
+                this.master.ConnectionUpdateRequest += this.connection_update_handler
+
+                emulator_devices = this.master.EnumerateUsb(Nordicsemi.UsbDeviceType.AnyDevice)
+
+                emulator_device = this.filter_emulator_device(emulator_devices, emulator_filter)
+
+                if emulator_device is None:
+                    raise Exception("Could not find emulator device")
+
+                this.master.SerialPortBaudRate = this.baud_rate
+
+                this.master.Open(emulator_device)
+
+                this.setup_service()
+
+                # Start Master Emulator
+                this.master.Run()
+
+                this.set_local_data()
+
+
+                if this.own_address:
+                    byte_endianess_transformed_address = this.change_byte_endianess(this.own_address)
+                    bt_device_address = Nordicsemi.BtDeviceAddress(byte_endianess_transformed_address)
+                    this.master.SetBDAddress(bt_device_address)
+
+                this.restore_bond_info()
+
+                # Run discovery procedure
+                this.myPeerDevice = this._discover_peer_device()
+                logger.log("Found peer device")
+
+                # Connect and bond to peer device
+                conn_params = Nordicsemi.BtConnectionParameters()
+                conn_params.ConnectionIntervalMs = 15
+                if this.master.Connect(this.myPeerDevice.DeviceAddress):
+                    logger.log("--- Connected ---")
+                else:
+                    raise(Exception("Connection failed"))
+
+                if this.service_setup_done:
+                    # Service discovery
+                    found_pipes = this.master.DiscoverPipes()
+
+                    print "PIPES RETURN VALUE: %s" % found_pipes
+
+                    if not found_pipes:
+                        return false
+
+                    logger.log("--- Pipes discovered ---")
+
             except Exception, ex:
                 logger.log("[EXCEPTION] %s" % ex)
                 logger.log("Call stack:")
@@ -519,13 +551,62 @@ namespace nRFdfu_cs
                 for f in reversed(tb):
                     logger.log("  File {0}, line {1}".format(os.path.basename(f[0]), f[1]))
                 this.num_of_errors += 1
-        else:
-            logger.log("Not connected - Skipping")
+                logger.log("number of errors: %i" % this.num_of_errors)
+                return false
 
-        # close MasterEmulator if open
-        if (this.master != None) and this.master.IsOpen:
-            this.master.Close()
-        */
+            return true
+            */
+        }
+
+        public void disconnect()
+        {
+            //""" Function for disconnecting from peer device and close the
+            //Master Emulator if opened. """
+            if (this.connected)
+            {
+                try {
+                    logger.log("Will disconnect now");
+                    this._disconnect();
+                    this._wait_for_disconnect();
+                }
+                catch(Exception ex)
+                {
+                    logger.log(String.Format("[EXCEPTION] {0}", ex));
+                    logger.log("Call stack:");
+                    //tb = traceback.extract_tb(sys.exc_info()[2]);
+                    //for f in reversed(tb):
+                    //    logger.log("  File {0}, line {1}".format(os.path.basename(f[0]), f[1]))
+                    this.num_of_errors += 1;
+                }
+            } else {
+                logger.log("Not connected - Skipping");
+            }
+            //# close MasterEmulator if open
+            if ((this.master != null) & (this.master.IsOpen))
+                this.master.Close();
+
+            /*
+            """ Function for disconnecting from peer device and close the
+            Master Emulator if opened. """
+            if this.connected:
+                try:
+                    logger.log("Will disconnect now")
+                    this._disconnect()
+                    this._wait_for_disconnect()
+                except Exception, ex:
+                    logger.log("[EXCEPTION] %s" % ex)
+                    logger.log("Call stack:")
+                    tb = traceback.extract_tb(sys.exc_info()[2])
+                    for f in reversed(tb):
+                        logger.log("  File {0}, line {1}".format(os.path.basename(f[0]), f[1]))
+                    this.num_of_errors += 1
+            else:
+                logger.log("Not connected - Skipping")
+
+            # close MasterEmulator if open
+            if (this.master != None) and this.master.IsOpen:
+                this.master.Close()
+            */
         }
 
     }

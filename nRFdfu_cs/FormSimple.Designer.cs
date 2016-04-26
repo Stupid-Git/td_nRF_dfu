@@ -36,6 +36,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.resultLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -50,7 +51,7 @@
             // btnProgram
             // 
             this.btnProgram.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.btnProgram.Location = new System.Drawing.Point(322, 41);
+            this.btnProgram.Location = new System.Drawing.Point(396, 41);
             this.btnProgram.Name = "btnProgram";
             this.btnProgram.Size = new System.Drawing.Size(457, 23);
             this.btnProgram.TabIndex = 50;
@@ -67,7 +68,7 @@
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(683, 4);
+            this.btnBrowse.Location = new System.Drawing.Point(756, 4);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(97, 23);
             this.btnBrowse.TabIndex = 43;
@@ -79,7 +80,7 @@
             // 
             this.progressBar1.Location = new System.Drawing.Point(12, 41);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(288, 23);
+            this.progressBar1.Size = new System.Drawing.Size(378, 23);
             this.progressBar1.TabIndex = 52;
             // 
             // openFileDialog1
@@ -97,7 +98,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(705, 70);
+            this.button1.Location = new System.Drawing.Point(778, 70);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 57;
@@ -105,11 +106,20 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(12, 99);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(841, 239);
+            this.richTextBox1.TabIndex = 58;
+            this.richTextBox1.Text = "";
+            // 
             // FormSimple
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(791, 100);
+            this.ClientSize = new System.Drawing.Size(865, 350);
+            this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.resultLabel);
             this.Controls.Add(this.progressBar1);
@@ -134,5 +144,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label resultLabel;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

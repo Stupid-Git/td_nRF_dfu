@@ -61,7 +61,7 @@ namespace nRFdfu_cs
         // http://stackoverflow.com/questions/2082615/pass-method-as-parameter-using-c-sharp
         // Func<int, object,int> arg
 
-        static public int dfuUpdate_RTR500BLE_bin_2(Func<int, object,int> arg, String comPortName, String binFileName, String datFileName)
+        static public int dfuUpdate_RTR500BLE_bin_2(Func<int, object, int> arg, String comPortName, String binFileName, String datFileName)
         {
             int r = 0;
             bool bSts;
@@ -74,6 +74,29 @@ namespace nRFdfu_cs
             r = arg(42, workerResult);
 
             bSts = dfuMain.update_RTR500_bin_2(arg, comPortName, binFileName, datFileName);
+            if (bSts)
+                r = 0;
+            else
+                r = -1;
+
+            return (r);
+        }
+
+        static public int dfuUpdate_Me_bin_2(Func<int, object, int> arg,  String Address, Int32 Baud_rate, String comPortName, String binFileName, String datFileName)
+        {
+            int r = 0;
+            bool bSts;
+            DfuMain dfuMain = new DfuMain();
+
+
+            string[] workerResult = new string[2];
+            workerResult[0] = "info";
+            workerResult[1] = "calling arg(workerResult); in dfuUpdate_RTR500BLE_bin_2";
+            r = arg(42, workerResult);
+
+            //public bool update_Me_bin_2(Func<int, object, int> arg, String Address, Int32 Baud_rate, String comPortName, String binFileName, String datFileName)
+            bSts = dfuMain.update_Me_bin_2(arg, Address, Baud_rate, comPortName, binFileName, datFileName);
+
             if (bSts)
                 r = 0;
             else

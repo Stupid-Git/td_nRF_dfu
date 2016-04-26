@@ -532,17 +532,13 @@ namespace nRFdfu_cs
             }
 
             double start_time = my_time.time();
-            /*
-             * logger.info("Starting DFU upgrade of type %s, SoftDevice size: %s, bootloader size: %s, application size: %s",
-             * program_mode,
-             * softdevice_size,
-             * bootloader_size,
-             * application_size)
-             * 
-             * logger.info("Sending DFU start packet, afterwards we wait for the flash on "
-             * "target to be initialized before continuing.")
-             */
-            dfu_transport.send_start_dfu(program_mode, softdevice_size, bootloader_size, application_size);
+           
+            logger.info(String.Format("Starting DFU upgrade of type {0}, SoftDevice size: {1}, bootloader size: {2}, application size: {3}",
+                          program_mode, softdevice_size, bootloader_size, application_size) );
+            logger.info("Sending DFU start packet, afterwards we wait for the flash on target to be initialized before continuing.");
+
+            /* debugging */          
+            this.dfu_transport.send_start_dfu(program_mode, softdevice_size, bootloader_size, application_size);
 
             logger.info("Sending DFU init packet");
             this.dfu_transport.send_init_packet(init_packet);
@@ -556,7 +552,7 @@ namespace nRFdfu_cs
 
             double end_time = my_time.time();
             logger.info(String.Format("DFU upgrade took {0}s", (end_time - start_time)) );
-
+            /* debugging */
             this.dfu_transport.close();  //TODO this DEinitialisation (e.g. put RTR500BLE into Normal mode [SET_DEVICE_DFU_MODE_OFF]) should be done here
         }
 

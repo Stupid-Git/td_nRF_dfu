@@ -129,6 +129,18 @@ namespace nRFdfu_cs
         }
 
 
+
+
+        class bgWorker_3_argument
+        {
+            public String Address;
+            public int Baud_rate;
+            public String portName;
+            public String binFileName;
+            public String datFileName;
+        }
+
+
         private void button1_Click(object sender, EventArgs e)
         {
 
@@ -142,11 +154,29 @@ namespace nRFdfu_cs
             workerResult[1] = "calling arg(workerResult); in dfuUpdate_RTR500BLE_bin_2";
            // r = arg(42, workerResult);
 
-            bSts = dfuMain.update_Me_bin("112233445566", 1000000, "COM42", "binFileName", "datFileName");
+
+#if false // OLD direct way
+            DfuProgram.dfuUpdate_RTR500BLE_bin(m_theRTR500BLEComPortList[0], "dfu_temp.bin", "dfu_temp.dat");
+            //bSts = dfuMain.update_Me_bin("112233445566", 1000000, "COM3", "test.bin", "test.dat");
+            bSts = dfuMain.update_Me_bin("EE0DFCA3E988", 1000000, "COM3", "test.bin", "test.dat");
             if (bSts)
                 r = 0;
             else
                 r = -1;
+#else
+            //bSts = dfuMain.update_Me_bin("EE0DFCA3E988", 1000000, "COM3", "test.bin", "test.dat");
+            bgWorker_3_argument arg3 = new bgWorker_3_argument();
+            arg3.Address = "EE0DFCA3E988";
+            arg3.Baud_rate = 1000000;
+            arg3.portName = "COM3";
+            arg3.binFileName = "test.bin";
+            arg3.datFileName = "test.dat";
+
+            this.btnProgram.Enabled = false;
+
+            backgroundWorker1.RunWorkerAsync(arg3);
+#endif
+            
 
             //return (r);
         }
@@ -270,6 +300,7 @@ namespace nRFdfu_cs
         // This event handler is where the actual, potentially time-consuming work is done.
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            int rtn;
             // Get the BackgroundWorker that raised this event.
             BackgroundWorker worker = sender as BackgroundWorker;
 
@@ -291,17 +322,48 @@ namespace nRFdfu_cs
 
                 /*
                 Objectprocessor_2 op_2 = new Objectprocessor_2(sender, e);
-                int r = DfuProgram.dfuUpdate_RTR500BLE_bin_2(op_2.processObject, arg.portName, arg.binFileName, arg.datFileName);
+                rtn = DfuProgram.dfuUpdate_RTR500BLE_bin_2(op_2.processObject, arg.portName, arg.binFileName, arg.datFileName);
                 */
-                int r = DfuProgram.dfuUpdate_RTR500BLE_bin_2(localProcessObject, arg.portName, arg.binFileName, arg.datFileName);
+                rtn = DfuProgram.dfuUpdate_RTR500BLE_bin_2(localProcessObject, arg.portName, arg.binFileName, arg.datFileName);
 
-                if (r == 0)
+                if (rtn == 0)
                 {
-                    e.Result = "Update complete";// +" r = " + r.ToString();
+                    e.Result = "Update complete";// +" r = " + rtn.ToString();
                 }
                 else
                 {
-                    e.Result = "Update FAILED" + " r = " + r.ToString();
+                    e.Result = "Update FAILED" + " r = " + rtn.ToString();
+                }
+
+                return; // the backgoround task terminates
+            }
+            else
+            if (e.Argument.GetType() == typeof(bgWorker_3_argument))
+            {
+                Console.WriteLine("########### bgWorker_3_argument");
+                bgWorker_3_argument arg = e.Argument as bgWorker_3_argument;
+
+                Console.WriteLine("arg.Address     = {0}", arg.Address);
+                Console.WriteLine("arg.Baud_rate   = {0}", arg.Baud_rate);
+                Console.WriteLine("arg.portName    = {0}", arg.portName);
+                Console.WriteLine("arg.binFileName = {0}", arg.binFileName);
+                Console.WriteLine("arg.datFileName = {0}", arg.datFileName);
+
+                //int r = DfuProgram.dfuUpdate_RTR500BLE_bin(arg.portName, arg.binFileName, arg.datFileName);
+
+                /*
+                Objectprocessor_2 op_2 = new Objectprocessor_2(sender, e);
+                rtn = DfuProgram.dfuUpdate_RTR500BLE_bin_2(op_2.processObject, arg.portName, arg.binFileName, arg.datFileName);
+                */
+                rtn = DfuProgram.dfuUpdate_Me_bin_2(localProcessObject, arg.Address, arg.Baud_rate, arg.portName, arg.binFileName, arg.datFileName);
+
+                if (rtn == 0)
+                {
+                    e.Result = "Update complete";// +" r = " + rtn.ToString();
+                }
+                else
+                {
+                    e.Result = "Update FAILED" + " r = " + rtn.ToString();
                 }
 
                 return; // the backgoround task terminates
@@ -370,6 +432,8 @@ namespace nRFdfu_cs
             //MessageBox.Show(workerResult[0]);
 
             Console.WriteLine(">>  " + workerResult[1] + " <<");
+            richTextBox1.AppendText(workerResult[1] + "\r\n");
+            richTextBox1.ScrollToCaret();
 
             if (workerResult[0] == "update_progress")
             {

@@ -22,23 +22,23 @@ logger = logging.getLogger(__name__)
 */
 
     //# BLE DFU OpCodes :
-    enum DfuOpcodesBle
+    public class DfuOpcodesBle
     {
-    //""" DFU opcodes used during DFU communication with bootloader
-    //
-    //    See http://developer.nordicsemi.com/nRF51_SDK/doc/7.2.0/s110/html/a00949.html#gafa9a52a3e6c43ccf00cf680f944d67a3
-    //    for further information
-    //"""
-    INVALID_OPCODE = 0,
-    START_DFU = 1,
-    INITIALIZE_DFU = 2,
-    RECEIVE_FIRMWARE_IMAGE = 3,
-    VALIDATE_FIRMWARE_IMAGE = 4,
-    ACTIVATE_FIRMWARE_AND_RESET = 5,
-    SYSTEM_RESET = 6,
-    REQ_PKT_RCPT_NOTIFICATION = 8,
-    RESPONSE = 16,
-    PKT_RCPT_NOTIF = 17,
+        //""" DFU opcodes used during DFU communication with bootloader
+        //
+        //    See http://developer.nordicsemi.com/nRF51_SDK/doc/7.2.0/s110/html/a00949.html#gafa9a52a3e6c43ccf00cf680f944d67a3
+        //    for further information
+        //"""
+        public static Byte INVALID_OPCODE = 0;
+        public static Byte START_DFU = 1;
+        public static Byte INITIALIZE_DFU = 2;
+        public static Byte RECEIVE_FIRMWARE_IMAGE = 3;
+        public static Byte VALIDATE_FIRMWARE_IMAGE = 4;
+        public static Byte ACTIVATE_FIRMWARE_AND_RESET = 5;
+        public static Byte SYSTEM_RESET = 6;
+        public static Byte REQ_PKT_RCPT_NOTIFICATION = 8;
+        public static Byte RESPONSE = 16;
+        public static Byte PKT_RCPT_NOTIF = 17;
     }
 
 
@@ -101,7 +101,7 @@ logger = logging.getLogger(__name__)
         //# Target about packet receipts. Make it 0 to disable the packet receipt
         //# notification
 
-        int NUM_OF_PACKETS_BETWEEN_NOTIF = 10;
+        UInt16 /*int*/ NUM_OF_PACKETS_BETWEEN_NOTIF = 10;
         int DATA_PACKET_SIZE = 20;
 
         void __init__()
@@ -134,45 +134,97 @@ logger = logging.getLogger(__name__)
         */
         }
 
-        void _wait_for_condition(int condition_function, bool expected_condition_value=true, int timeout=10, string  waiting_for="condition") //TODO params
+        delegate bool condition_function_DEL();
+
+        void _wait_for_condition(condition_function_DEL condition_function, bool expected_condition_value=true, double timeout=10.0F, string  waiting_for="condition") //TODO params
         {
-        /*
-        """
-        Waits for condition_function to be true
-        Will timeout after 60 seconds
+            //"""
+            //Waits for condition_function to be true
+            //Will timeout after 60 seconds
 
-        :param function condition_function: The function we are waiting for to return true
-        :param str timeout_message: Message that should be logged
-        :return:
-        """
+            //:param function condition_function: The function we are waiting for to return true
+            //:param str timeout_message: Message that should be logged
+            //:return:
+            //"""
 
-        start_time = datetime.now()
+            //double start_time = datetime.now();
+            //double timeout = 10.0F;
+            bool timed_out = false;
 
-        while condition_function() != expected_condition_value:
-            timeout_message = "Timeout while waiting for {0}.".format(waiting_for)
-            timed_out = datetime.now() - start_time > timedelta(0, timeout)
-            if timed_out:
-                this._send_event(DfuEvent.TIMEOUT_EVENT, log_message=timeout_message)
-                raise NordicSemiException(timeout_message)
+            while (condition_function() != expected_condition_value)
+            {
+                String timeout_message = String.Format("Timeout while waiting for {0}.", waiting_for);
+                //bool timed_out = (datetime.now() - start_time) > datetime.timedelta(0, timeout);
+                if (timeout <= 0.0)
+                    timed_out = true;
 
-            if not this.is_open():
-                log_message = "Disconnected from device while waiting for {0}.".format(waiting_for)
-                raise IllegalStateException(log_message)
+                if (timed_out)
+                {
+                    this._send_event(DfuEvent.TIMEOUT_EVENT, 0, true, /*log_message=*/timeout_message);
+                    //raise NordicSemiException(timeout_message);
+                    throw new System.Exception(timeout_message);
+                }
 
-            sleep(0.1)
+                if (!this.is_open())
+                {
+                    String log_message = String.Format("Disconnected from device while waiting for {0}.", waiting_for);
+                    //TODO raise IllegalStateException(log_message)
+                    throw new System.Exception(log_message);
+                }
 
-        if this.get_last_error() != DfuErrorCodeBle.SUCCESS:
-            error_message = "Error occoured while waiting for {0}. Error response {1}."
-            error_code = DfuErrorCodeBle.error_code_lookup(this.get_last_error())
-            error_message = error_message.format(waiting_for, error_code)
-            this._send_event(DfuEvent.ERROR_EVENT, log_message=error_message)
-            raise NordicSemiException(error_message)
-        */
+                System.Threading.Thread.Sleep(100); //sleep(0.1)
+                timeout -= 0.1F; //karel
+                //sleep(0.1);
+            }
+
+            if (this.get_last_error() != DfuErrorCodeBle.SUCCESS)
+            {
+                // error_message = "Error occoured while waiting for {0}. Error response {1}."
+                // error_code = DfuErrorCodeBle.error_code_lookup(this.get_last_error())
+                // error_message = error_message.format(waiting_for, error_code)
+                // this._send_event(DfuEvent.ERROR_EVENT, log_message=error_message)
+                // raise NordicSemiException(error_message)
+                throw new System.Exception("Last Error not SUCCESS");
+            }
+
+            /*
+            """
+            Waits for condition_function to be true
+            Will timeout after 60 seconds
+
+            :param function condition_function: The function we are waiting for to return true
+            :param str timeout_message: Message that should be logged
+            :return:
+            """
+
+            start_time = datetime.now()
+
+            while condition_function() != expected_condition_value:
+                timeout_message = "Timeout while waiting for {0}.".format(waiting_for)
+                timed_out = datetime.now() - start_time > timedelta(0, timeout)
+                if timed_out:
+                    this._send_event(DfuEvent.TIMEOUT_EVENT, log_message=timeout_message)
+                    raise NordicSemiException(timeout_message)
+
+                if not this.is_open():
+                    log_message = "Disconnected from device while waiting for {0}.".format(waiting_for)
+                    raise IllegalStateException(log_message)
+
+                sleep(0.1)
+
+            if this.get_last_error() != DfuErrorCodeBle.SUCCESS:
+                error_message = "Error occoured while waiting for {0}. Error response {1}."
+                error_code = DfuErrorCodeBle.error_code_lookup(this.get_last_error())
+                error_message = error_message.format(waiting_for, error_code)
+                this._send_event(DfuEvent.ERROR_EVENT, log_message=error_message)
+                raise NordicSemiException(error_message)
+            */
         }
 
 //    @abc.abstractmethod
-        void send_packet_data(byte [] data)
-        {
+        //NG public abstract void send_packet_data(byte[] data);
+        public virtual void send_packet_data(byte[] data) { }
+        //{
         /*
         """
         Send data to the packet characteristic
@@ -182,11 +234,12 @@ logger = logging.getLogger(__name__)
         """
         pass
         */
-        }
+        //}
 
 //    @abc.abstractmethod
-        void send_control_data(int opcode, byte [] data) //TODO params
-        {
+        //NG public abstract void send_control_data(/*DfuOpcodesBle*/ Byte opcode, byte[] data); //TODO params
+        public virtual void send_control_data(/*DfuOpcodesBle*/ Byte opcode, byte[] data) {}
+        //{
         /*
         """
         Send data to the control characteristic
@@ -197,11 +250,11 @@ logger = logging.getLogger(__name__)
         """
         pass
         */
-        }
+        //}
 
 //    @abc.abstractmethod
-        void get_received_response()
-        {
+        //NG public abstract bool get_received_response();
+        public virtual bool get_received_response() { return (false); }
         /*
         """
         Returns True if the transport layer has received a response it expected
@@ -209,8 +262,11 @@ logger = logging.getLogger(__name__)
         :return: bool
         """
         pass
+        */
 
-        void clear_received_response()
+        //NG public abstract void clear_received_response();
+        public virtual void clear_received_response() {}
+        /*
         """
         Clears the received response status, sets it to False.
 
@@ -218,11 +274,11 @@ logger = logging.getLogger(__name__)
         """
         pass
         */
-        }
 
 //    @abc.abstractmethod
-        void is_waiting_for_notification()
-        {
+        //NG public abstract bool is_waiting_for_notification(); //   return(false);
+        public virtual bool is_waiting_for_notification() { return (false); }
+
         /*
         """
         Returns True if the transport layer is waiting for a notification
@@ -231,7 +287,7 @@ logger = logging.getLogger(__name__)
         """
         pass
         */
-        }
+        //}
 
         void set_waiting_for_notification()
         {
@@ -246,8 +302,9 @@ logger = logging.getLogger(__name__)
         }
 
 //    @abc.abstractmethod
-        void get_last_error()
-        {
+        //public abstract DfuErrorCodeBle get_last_error();
+        //NG public abstract int get_last_error();// { return (DfuErrorCodeBle.INVALID_STATE); }
+        public virtual int get_last_error() { return (DfuErrorCodeBle.INVALID_STATE); }
         /*
         """
         Returns the last error code
@@ -256,119 +313,257 @@ logger = logging.getLogger(__name__)
         """
         pass
         */
-        }
 
-        void _start_dfu(int program_mode, int image_size_packet) //TODO params
+        void _start_dfu(int program_mode, Byte [] image_size_packet) //TODO params
         {
-        /*
-        logger.debug("Sending 'START DFU' command")
-        this.send_control_data(DfuOpcodesBle.START_DFU, chr(program_mode))
-        logger.debug("Sending image size")
-        this.send_packet_data(image_size_packet)
-        this._wait_for_condition(this.get_received_response, waiting_for="response for START DFU")
-        this.clear_received_response()
-        */
+            Byte [] BAprogram_mode = new Byte[]  { (Byte)(program_mode & 0x000000ff) };
+
+            logger.debug("Sending 'START DFU' command");
+            this.send_control_data(DfuOpcodesBle.START_DFU, BAprogram_mode /*chr(program_mode)*/);
+            logger.debug("Sending image size");
+            this.send_packet_data(image_size_packet);
+            this._wait_for_condition(this.get_received_response, true, 10.0F, /*waiting_for=*/"response for START DFU");
+            this.clear_received_response();
+            /*
+            logger.debug("Sending 'START DFU' command")
+            this.send_control_data(DfuOpcodesBle.START_DFU, chr(program_mode))
+            logger.debug("Sending image size")
+            this.send_packet_data(image_size_packet)
+            this._wait_for_condition(this.get_received_response, waiting_for="response for START DFU")
+            this.clear_received_response()
+            */
         }
 
         public override void send_start_dfu(int program_mode, int softdevice_size = 0, int bootloader_size = 0, int app_size = 0)
         {
-        /*
-        super(DfuTransportBle, this).send_start_dfu(program_mode, softdevice_size, bootloader_size, app_size)
-        image_size_packet = DfuTransport.create_image_size_packet(softdevice_size, bootloader_size, app_size)
+            Byte [] image_size_packet;
 
-        this._send_event(DfuEvent.PROGRESS_EVENT, progress=0, log_message="Setting up transfer...")
+            //TODO super(DfuTransportBle, this).send_start_dfu(program_mode, softdevice_size, bootloader_size, app_size);
+            image_size_packet = DfuTransport.create_image_size_packet(softdevice_size, bootloader_size, app_size);
 
-        try:
-            this._start_dfu(program_mode, image_size_packet)
-        except IllegalStateException:
-            # We got disconnected. Try to send Start DFU again in case of buttonless dfu.
-            this.close()
-            this.open()
+            this._send_event(DfuEvent.PROGRESS_EVENT, /*progress=*/0, false, /*log_message=*/"Setting up transfer...");
 
-            if not this.is_open():
-                raise IllegalStateException("Failed to reopen transport backend.")
+            try
+            {
+                this._start_dfu(program_mode, image_size_packet);
+            }
+            catch (/*IllegalStateException*/ Exception /*ex*/)
+            {
+                //# We got disconnected. Try to send Start DFU again in case of buttonless dfu.
+                this.close();
+                this.open();
 
-            this._start_dfu(program_mode, image_size_packet)
-        */
+                if (!this.is_open())
+                {
+                    //TODOraise IllegalStateException("Failed to reopen transport backend.");
+                }
+
+                this._start_dfu(program_mode, image_size_packet);
+            }
+            /*
+            super(DfuTransportBle, this).send_start_dfu(program_mode, softdevice_size, bootloader_size, app_size)
+            image_size_packet = DfuTransport.create_image_size_packet(softdevice_size, bootloader_size, app_size)
+
+            this._send_event(DfuEvent.PROGRESS_EVENT, progress=0, log_message="Setting up transfer...")
+
+            try:
+                this._start_dfu(program_mode, image_size_packet)
+            except IllegalStateException:
+                # We got disconnected. Try to send Start DFU again in case of buttonless dfu.
+                this.close()
+                this.open()
+
+                if not this.is_open():
+                    raise IllegalStateException("Failed to reopen transport backend.")
+
+                this._start_dfu(program_mode, image_size_packet)
+            */
         }
 
         public override void send_init_packet(byte[] init_packet)
         {
-        /*
-        super(DfuTransportBle, this).send_init_packet(init_packet)
-        init_packet_start = chr(0x00)
-        init_packet_end = chr(0x01)
+            Console.WriteLine("TODO >>>> send_init_packet(byte[] init_packet)");
 
-        logger.debug("Sending 'INIT DFU' command")
-        this.send_control_data(DfuOpcodesBle.INITIALIZE_DFU, init_packet_start)
+            //super(DfuTransportBle, this).send_init_packet(init_packet);
+            Byte [] init_packet_start = new Byte[] {0x00}; //chr(0x00);
+            Byte [] init_packet_end = new Byte[] {0x01}; //chr(0x01);
 
-        logger.debug("Sending init data")
-        for i in range(0, len(init_packet), DATA_PACKET_SIZE):
-            data_to_send = init_packet[i:i + DATA_PACKET_SIZE]
-            this.send_packet_data(data_to_send)
 
-        logger.debug("Sending 'Init Packet Complete' command")
-        this.send_control_data(DfuOpcodesBle.INITIALIZE_DFU, init_packet_end)
-        this._wait_for_condition(this.get_received_response, timeout=60, waiting_for="response for INITIALIZE DFU")
-        this.clear_received_response()
+            logger.debug("Sending 'INIT DFU' command");
+            this.send_control_data(DfuOpcodesBle.INITIALIZE_DFU, init_packet_start);
 
-        if NUM_OF_PACKETS_BETWEEN_NOTIF:
-            packet = int16_to_bytes(NUM_OF_PACKETS_BETWEEN_NOTIF)
-            logger.debug("Send number of packets before device sends notification")
-            this.send_control_data(DfuOpcodesBle.REQ_PKT_RCPT_NOTIFICATION, packet)
-        */
+            logger.debug("Sending init data");
+            for(int i=0; i<init_packet.Length; i+=DATA_PACKET_SIZE)
+            {
+                //data_to_send = init_packet[i:i + DATA_PACKET_SIZE];
+                int jSize = DATA_PACKET_SIZE;
+                if (jSize > init_packet.Length - i)
+                    jSize = init_packet.Length - i;
+                Byte[] data_to_send = new Byte[jSize];
+                for (int j = 0; j < jSize; j++)
+                {
+                    data_to_send[j] = init_packet[i + j];
+                }
+
+                this.send_packet_data(data_to_send);
+            }
+
+            logger.debug("Sending 'Init Packet Complete' command");
+            this.send_control_data(DfuOpcodesBle.INITIALIZE_DFU, init_packet_end);
+            this._wait_for_condition(this.get_received_response, true, /*timeout=*/60.0, /*waiting_for=*/"response for INITIALIZE DFU");
+            this.clear_received_response();
+
+            if (NUM_OF_PACKETS_BETWEEN_NOTIF != 0)
+            {
+                Byte [] packet = my_dfu_util.int16_to_bytes(NUM_OF_PACKETS_BETWEEN_NOTIF);
+                logger.debug("Send number of packets before device sends notification");
+                this.send_control_data(DfuOpcodesBle.REQ_PKT_RCPT_NOTIFICATION, packet);
+            }
+            /*
+            super(DfuTransportBle, this).send_init_packet(init_packet)
+            init_packet_start = chr(0x00)
+            init_packet_end = chr(0x01)
+
+            logger.debug("Sending 'INIT DFU' command")
+            this.send_control_data(DfuOpcodesBle.INITIALIZE_DFU, init_packet_start)
+
+            logger.debug("Sending init data")
+            for i in range(0, len(init_packet), DATA_PACKET_SIZE):
+                data_to_send = init_packet[i:i + DATA_PACKET_SIZE]
+                this.send_packet_data(data_to_send)
+
+            logger.debug("Sending 'Init Packet Complete' command")
+            this.send_control_data(DfuOpcodesBle.INITIALIZE_DFU, init_packet_end)
+            this._wait_for_condition(this.get_received_response, timeout=60, waiting_for="response for INITIALIZE DFU")
+            this.clear_received_response()
+
+            if NUM_OF_PACKETS_BETWEEN_NOTIF:
+                packet = int16_to_bytes(NUM_OF_PACKETS_BETWEEN_NOTIF)
+                logger.debug("Send number of packets before device sends notification")
+                this.send_control_data(DfuOpcodesBle.REQ_PKT_RCPT_NOTIFICATION, packet)
+            */
         }
 
+        
+        int progress_percentage(int part, int complete)
+        {
+            //"""
+            //Calculate progress percentage
+            //:param int part: Part value
+            //:param int complete: Completed value
+            //:return: int: Percentage complete
+            //"""
+            
+            int rtn;
+            rtn = ((part + DATA_PACKET_SIZE) * 100) / complete;
+
+            if(rtn > 100)
+                rtn = 100;
+            return(rtn);
+            
+            //return min(100, (part + DATA_PACKET_SIZE) * 100 / complete)
+        }
+        
         public override void send_firmware(byte[] firmware)
         {
-        /*
-            void progress_percentage(part, complete):
-            """
-                Calculate progress percentage
-                :param int part: Part value
-                :param int complete: Completed value
-                :return: int: Percentage complete
+            //super(DfuTransportBle, this).send_firmware(firmware)
+            int packets_sent = 0;
+            int last_progress_update = -1;  //# Last packet sequence number when an update was fired to the event system
+            int bin_size = firmware.Length;
+            logger.debug("Send 'RECEIVE FIRMWARE IMAGE' command");
+            this.send_control_data(DfuOpcodesBle.RECEIVE_FIRMWARE_IMAGE, new Byte[0]);
+
+            for(int i=0; i<bin_size; i+=DATA_PACKET_SIZE)
+            {
+                int progress = progress_percentage(i, bin_size);
+
+                if (progress != last_progress_update)
+                {
+                    this._send_event(DfuEvent.PROGRESS_EVENT, /*progress=*/progress, false, /*log_message=*/"Uploading firmware");
+                    last_progress_update = progress;
+                }
+                this._wait_for_condition(this.is_waiting_for_notification, /*expected_condition_value=*/false, 10.0F,
+                                         /*waiting_for=*/"notification from device");
+
+                //data_to_send = firmware[i:i + DATA_PACKET_SIZE];
+                int jSize = DATA_PACKET_SIZE;
+                if( jSize > bin_size - i)
+                    jSize = bin_size - i;
+                Byte[] data_to_send = new Byte[jSize];
+                for(int j =0 ; j<jSize; j++)
+                {
+                    data_to_send[j] = firmware[i + j];
+                }
+
+                String log_message = String.Format("Sending Firmware bytes [{0}, {1}]", i, i + data_to_send.Length);
+                logger.debug(log_message);
+
+                packets_sent += 1;
+
+                if (NUM_OF_PACKETS_BETWEEN_NOTIF != 0)
+                    if ((packets_sent % NUM_OF_PACKETS_BETWEEN_NOTIF) == 0)
+                        this.set_waiting_for_notification();
+
+                this.send_packet_data(data_to_send);
+            }
+            this._wait_for_condition(this.get_received_response, true, 10.0, /*waiting_for=*/"response for RECEIVE FIRMWARE IMAGE");
+            this.clear_received_response();
+
+            /*
+                void progress_percentage(part, complete):
                 """
-            return min(100, (part + DATA_PACKET_SIZE) * 100 / complete)
+                    Calculate progress percentage
+                    :param int part: Part value
+                    :param int complete: Completed value
+                    :return: int: Percentage complete
+                    """
+                return min(100, (part + DATA_PACKET_SIZE) * 100 / complete)
 
-        super(DfuTransportBle, this).send_firmware(firmware)
-        packets_sent = 0
-        last_progress_update = -1  # Last packet sequence number when an update was fired to the event system
-        bin_size = len(firmware)
-        logger.debug("Send 'RECEIVE FIRMWARE IMAGE' command")
-        this.send_control_data(DfuOpcodesBle.RECEIVE_FIRMWARE_IMAGE)
+            super(DfuTransportBle, this).send_firmware(firmware)
+            packets_sent = 0
+            last_progress_update = -1  # Last packet sequence number when an update was fired to the event system
+            bin_size = len(firmware)
+            logger.debug("Send 'RECEIVE FIRMWARE IMAGE' command")
+            this.send_control_data(DfuOpcodesBle.RECEIVE_FIRMWARE_IMAGE)
 
-        for i in range(0, bin_size, DATA_PACKET_SIZE):
-            progress = progress_percentage(i, bin_size)
+            for i in range(0, bin_size, DATA_PACKET_SIZE):
+                progress = progress_percentage(i, bin_size)
 
-            if progress != last_progress_update:
-                this._send_event(DfuEvent.PROGRESS_EVENT, progress=progress, log_message="Uploading firmware")
-                last_progress_update = progress
+                if progress != last_progress_update:
+                    this._send_event(DfuEvent.PROGRESS_EVENT, progress=progress, log_message="Uploading firmware")
+                    last_progress_update = progress
 
-            this._wait_for_condition(this.is_waiting_for_notification, expected_condition_value=False,
-                                     waiting_for="notification from device")
+                this._wait_for_condition(this.is_waiting_for_notification, expected_condition_value=False,
+                                         waiting_for="notification from device")
 
-            data_to_send = firmware[i:i + DATA_PACKET_SIZE]
+                data_to_send = firmware[i:i + DATA_PACKET_SIZE]
 
-            log_message = "Sending Firmware bytes [{0}, {1}]".format(i, i + len(data_to_send))
-            logger.debug(log_message)
+                log_message = "Sending Firmware bytes [{0}, {1}]".format(i, i + len(data_to_send))
+                logger.debug(log_message)
 
-            packets_sent += 1
+                packets_sent += 1
 
-            if NUM_OF_PACKETS_BETWEEN_NOTIF != 0:
-                if (packets_sent % NUM_OF_PACKETS_BETWEEN_NOTIF) == 0:
-                    this.set_waiting_for_notification()
+                if NUM_OF_PACKETS_BETWEEN_NOTIF != 0:
+                    if (packets_sent % NUM_OF_PACKETS_BETWEEN_NOTIF) == 0:
+                        this.set_waiting_for_notification()
 
-            this.send_packet_data(data_to_send)
+                this.send_packet_data(data_to_send)
 
-        this._wait_for_condition(this.get_received_response, waiting_for="response for RECEIVE FIRMWARE IMAGE")
-        this.clear_received_response()
-        */
+            this._wait_for_condition(this.get_received_response, waiting_for="response for RECEIVE FIRMWARE IMAGE")
+            this.clear_received_response()
+            */
         }
 
         public override bool send_validate_firmware()
         {
-            return (false);
+            //super(DfuTransportBle, this).send_validate_firmware()
+            logger.debug("Sending 'VALIDATE FIRMWARE IMAGE' command");
+            this.send_control_data(DfuOpcodesBle.VALIDATE_FIRMWARE_IMAGE, new Byte[0]);
+            this._wait_for_condition(this.get_received_response, true, 10.0, /*waiting_for=*/"response for VALIDATE FIRMWARE IMAGE");
+            this.clear_received_response();
+            logger.info("Firmware validated OK.");
+            return (true);
+
             /*
             super(DfuTransportBle, this).send_validate_firmware()
             logger.debug("Sending 'VALIDATE FIRMWARE IMAGE' command")
@@ -381,11 +576,15 @@ logger = logging.getLogger(__name__)
 
         public override void send_activate_firmware()
         {
-        /*
-        super(DfuTransportBle, this).send_activate_firmware()
-        logger.debug("Sending 'ACTIVATE FIRMWARE AND RESET' command")
-        this.send_control_data(DfuOpcodesBle.ACTIVATE_FIRMWARE_AND_RESET)
-        */
+            //super(DfuTransportBle, this).send_activate_firmware()
+            logger.debug("Sending 'ACTIVATE FIRMWARE AND RESET' command");
+            this.send_control_data(DfuOpcodesBle.ACTIVATE_FIRMWARE_AND_RESET, new Byte[0]);
+
+            /*
+            super(DfuTransportBle, this).send_activate_firmware()
+            logger.debug("Sending 'ACTIVATE FIRMWARE AND RESET' command")
+            this.send_control_data(DfuOpcodesBle.ACTIVATE_FIRMWARE_AND_RESET)
+            */
         }
 
     }

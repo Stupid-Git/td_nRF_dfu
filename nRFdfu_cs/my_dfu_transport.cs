@@ -49,8 +49,22 @@ namespace nRFdfu_cs
             //TODO Byte [] softdevice_size_packet = int32_to_bytes(softdevice_size);
             //TODO Byte [] bootloader_size_packet = int32_to_bytes(bootloader_size);
             //TODO Byte [] app_size_packet = int32_to_bytes(app_size);
-            Byte[] image_size_packet = null; //TODO softdevice_size_packet + bootloader_size_packet + app_size_packet;
+          //  Byte[] image_size_packet = null; //TODO softdevice_size_packet + bootloader_size_packet + app_size_packet;
+          //  return (image_size_packet);
+
+            List<Byte> frame = new List<Byte>();
+
+            frame.Clear();
+            //frame.AddRange(my_dfu_util.int32_to_bytes(DFU_START_PACKET));//, 4);
+            //frame.AddRange(my_dfu_util.int32_to_bytes((UInt32)program_mode));//, 4);      //hex_type    
+            //frame.AddRange( DfuTransport.create_image_size_packet(softdevice_size, bootloader_size, app_size) );
+            frame.AddRange(my_dfu_util.int32_to_bytes((UInt32)softdevice_size));//, 4 );  // size of SoftDevice    
+            frame.AddRange(my_dfu_util.int32_to_bytes((UInt32)bootloader_size));//, 4 );  // size of BootLoader
+            frame.AddRange(my_dfu_util.int32_to_bytes((UInt32)app_size));//, 4 );         // size of Application
+
+            Byte[] image_size_packet = frame.ToArray(); //TODO softdevice_size_packet + bootloader_size_packet + app_size_packet;
             return (image_size_packet);
+
         }
 
         /*
