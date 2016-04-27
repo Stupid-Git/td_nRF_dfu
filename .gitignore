@@ -6,6 +6,14 @@ nRFdfu_1/*
 nRFdfu_cs_0002/*
 pc-nrfutil-master/*
 
+*.vsd
+
+*.py
+nRFdfu_cs/lib/nordicsemi/dfu/tests/firmwares/*.hex
+nRFdfu_cs/lib/nordicsemi/dfu/tests/firmwares/*.bin
+nRFdfu_cs/lib/nordicsemi/utility/tests/test_targets.json
+nRFdfu_cs/lib/nordicsemi/dfu/tests/key.pem
+
 
 # User-specific files
 *.suo
