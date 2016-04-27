@@ -7,6 +7,7 @@ nRFdfu_cs_0002/*
 pc-nrfutil-master/*
 
 nRFdfu_cs/*.vsd
+nRFdfu_cs/dfu.vsd
 
 *.py
 nRFdfu_cs/lib/nordicsemi/dfu/tests/firmwares/*.hex
