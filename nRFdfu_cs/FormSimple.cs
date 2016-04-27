@@ -355,6 +355,7 @@ namespace nRFdfu_cs
                 Objectprocessor_2 op_2 = new Objectprocessor_2(sender, e);
                 rtn = DfuProgram.dfuUpdate_RTR500BLE_bin_2(op_2.processObject, arg.portName, arg.binFileName, arg.datFileName);
                 */
+                timer1.Start();
                 rtn = DfuProgram.dfuUpdate_Me_bin_2(localProcessObject, arg.Address, arg.Baud_rate, arg.portName, arg.binFileName, arg.datFileName);
 
                 if (rtn == 0)
@@ -420,7 +421,8 @@ namespace nRFdfu_cs
             btnProgram.Enabled = true;
         }
 
-
+        bool enableUpdate;
+        String richText = "";
         // This event handler updates the progress bar.
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {   
@@ -431,25 +433,35 @@ namespace nRFdfu_cs
             //Console.WriteLine("##########  " + workerResult[1]);
             //MessageBox.Show(workerResult[0]);
 
-            Console.WriteLine(">>  " + workerResult[1] + " <<");
-            richTextBox1.AppendText(workerResult[1] + "\r\n");
-            richTextBox1.ScrollToCaret();
-
+            //Console.WriteLine(">>  " + workerResult[0] + ": " + workerResult[1] + " <<");
+            //richTextBox1.AppendText(workerResult[0] + ": " + workerResult[1] + "\r\n");
+            richText += workerResult[0] + ": " + workerResult[1] + "\r\n";
+            /*
+            if (enableUpdate == true)
+            {
+                enableUpdate = false;
+                richTextBox1.AppendText( richText );
+                richTextBox1.ScrollToCaret();
+                richText = "";
+            }
+            */
+            
             if (workerResult[0] == "update_progress")
             {
                 resultLabel.Text = "Update_progress: " + workerResult[1];
                 this.progressBar1.Value = e.ProgressPercentage;
             }
+            /*
             if(workerResult[0] == "status")
             {
                 resultLabel.Text = "Status: " + workerResult[1];
             }
-
+            
             if(workerResult[0] == "error")
             {
                 resultLabel.Text = "Error: " + workerResult[1];
             }
-
+            
             if (workerResult[0] == "debug")
             {
                 resultLabel.Text = "Debug: " + workerResult[1];
@@ -459,6 +471,26 @@ namespace nRFdfu_cs
             {
                 resultLabel.Text = "Info: " + workerResult[1];
             }
+            */
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            enableUpdate = true;
+            timer1.Start();
+
+            if (enableUpdate == true)
+            {
+                enableUpdate = false;
+                if (richText.Length != 0)
+                {
+                    richTextBox1.AppendText(richText);
+                    richTextBox1.ScrollToCaret();
+                    richText = "";
+                }
+            }
+            
+
+            //richTextBox1.ScrollToCaret();
         }
 
 

@@ -58,25 +58,55 @@ logger = logging.getLogger(__name__)
         public static int OPERATION_FAILED = 6;
 
         //@staticmethod
+        public static String error_code_lookup(int error_code)
+        {
+            //"""
+            //Returns a description lookup table for error codes received from peer.
+            //
+            //:param int error_code: Error code to parse
+            //:return str: Textual description of the error code
+            //"""
+            //String code_lookup;
+
+            if (error_code == DfuErrorCodeBle.SUCCESS) return ("SUCCESS");
+            if (error_code == DfuErrorCodeBle.INVALID_STATE) return ("Invalid State");
+            if (error_code == DfuErrorCodeBle.NOT_SUPPORTED) return ("Not Supported");
+            if (error_code == DfuErrorCodeBle.DATA_SIZE_EXCEEDS_LIMIT) return ("Data Size Exceeds Limit");
+            if (error_code == DfuErrorCodeBle.CRC_ERROR) return ("CRC Error");
+            if (error_code == DfuErrorCodeBle.OPERATION_FAILED) return ("Operation Failed");
+            return ("UNKOWN ERROR CODE");
+            /*
+            code_lookup = {DfuErrorCodeBle.SUCCESS: "SUCCESS",
+                           DfuErrorCodeBle.INVALID_STATE: "Invalid State",
+                           DfuErrorCodeBle.NOT_SUPPORTED: "Not Supported",
+                           DfuErrorCodeBle.DATA_SIZE_EXCEEDS_LIMIT: "Data Size Exceeds Limit",
+                           DfuErrorCodeBle.CRC_ERROR: "CRC Error",
+                           DfuErrorCodeBle.OPERATION_FAILED: "Operation Failed"}
+
+            return code_lookup.get(error_code, "UNKOWN ERROR CODE")
+            */
+        }
+        /*
         static void error_code_lookup(DfuErrorCodeBle error_code)
         {
-        //"""
-        //Returns a description lookup table for error codes received from peer.
-        //
-        //:param int error_code: Error code to parse
-        //:return str: Textual description of the error code
-        //"""
-        /*
-        code_lookup = {DfuErrorCodeBle.SUCCESS: "SUCCESS",
-                       DfuErrorCodeBle.INVALID_STATE: "Invalid State",
-                       DfuErrorCodeBle.NOT_SUPPORTED: "Not Supported",
-                       DfuErrorCodeBle.DATA_SIZE_EXCEEDS_LIMIT: "Data Size Exceeds Limit",
-                       DfuErrorCodeBle.CRC_ERROR: "CRC Error",
-                       DfuErrorCodeBle.OPERATION_FAILED: "Operation Failed"}
+            //"""
+            //Returns a description lookup table for error codes received from peer.
+            //
+            //:param int error_code: Error code to parse
+            //:return str: Textual description of the error code
+            //"""
+            
+            code_lookup = {DfuErrorCodeBle.SUCCESS: "SUCCESS",
+                           DfuErrorCodeBle.INVALID_STATE: "Invalid State",
+                           DfuErrorCodeBle.NOT_SUPPORTED: "Not Supported",
+                           DfuErrorCodeBle.DATA_SIZE_EXCEEDS_LIMIT: "Data Size Exceeds Limit",
+                           DfuErrorCodeBle.CRC_ERROR: "CRC Error",
+                           DfuErrorCodeBle.OPERATION_FAILED: "Operation Failed"}
 
-        return code_lookup.get(error_code, "UNKOWN ERROR CODE")
-        */
+            return code_lookup.get(error_code, "UNKOWN ERROR CODE")
+            
         }
+        */
     }
 
 
@@ -172,19 +202,30 @@ logger = logging.getLogger(__name__)
                     throw new System.Exception(log_message);
                 }
 
-                System.Threading.Thread.Sleep(100); //sleep(0.1)
-                timeout -= 0.1F; //karel
+                //System.Threading.Thread.Sleep(100);
+                //timeout -= 0.1F; //karel
+                //System.Threading.Thread.Sleep(10);
+                //timeout -= 0.01F; //karel
+                System.Threading.Thread.Sleep(1);
+                timeout -= 0.001F; //karel
                 //sleep(0.1);
             }
 
             if (this.get_last_error() != DfuErrorCodeBle.SUCCESS)
             {
-                // error_message = "Error occoured while waiting for {0}. Error response {1}."
-                // error_code = DfuErrorCodeBle.error_code_lookup(this.get_last_error())
-                // error_message = error_message.format(waiting_for, error_code)
-                // this._send_event(DfuEvent.ERROR_EVENT, log_message=error_message)
+                String error_message = "Error occoured while waiting for {0}. Error response {1}.";
+                String error_code = DfuErrorCodeBle.error_code_lookup(this.get_last_error());
+                error_message = String.Format( error_message, waiting_for, error_code );
+                this._send_event(DfuEvent.ERROR_EVENT, 0, false, /*log_message=*/error_message);
                 // raise NordicSemiException(error_message)
-                throw new System.Exception("Last Error not SUCCESS");
+                throw new System.Exception("Last Error not SUCCESS" + error_message);
+
+                /*error_message = "Error occoured while waiting for {0}. Error response {1}."
+                  error_code = DfuErrorCodeBle.error_code_lookup(this.get_last_error())
+                  error_message = error_message.format(waiting_for, error_code)
+                  this._send_event(DfuEvent.ERROR_EVENT, log_message=error_message)
+                  raise NordicSemiException(error_message)
+                 */
             }
 
             /*
@@ -289,7 +330,7 @@ logger = logging.getLogger(__name__)
         */
         //}
 
-        void set_waiting_for_notification()
+        public virtual void set_waiting_for_notification()
         {
         /*
         """
@@ -319,8 +360,9 @@ logger = logging.getLogger(__name__)
             Byte [] BAprogram_mode = new Byte[]  { (Byte)(program_mode & 0x000000ff) };
 
             logger.debug("Sending 'START DFU' command");
-            this.send_control_data(DfuOpcodesBle.START_DFU, BAprogram_mode /*chr(program_mode)*/);
             logger.debug("Sending image size");
+            this.send_control_data(DfuOpcodesBle.START_DFU, BAprogram_mode /*chr(program_mode)*/);
+            //logger.debug("Sending image size");
             this.send_packet_data(image_size_packet);
             this._wait_for_condition(this.get_received_response, true, 10.0F, /*waiting_for=*/"response for START DFU");
             this.clear_received_response();

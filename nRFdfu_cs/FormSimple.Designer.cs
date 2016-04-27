@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.btnProgram = new System.Windows.Forms.Button();
             this.tbFilename = new System.Windows.Forms.TextBox();
@@ -37,6 +38,7 @@
             this.resultLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // label1
@@ -114,6 +116,12 @@
             this.richTextBox1.TabIndex = 58;
             this.richTextBox1.Text = "";
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // FormSimple
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -145,5 +153,6 @@
         private System.Windows.Forms.Label resultLabel;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Timer timer1;
     }
 }

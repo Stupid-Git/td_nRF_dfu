@@ -96,19 +96,18 @@
     </Compile>
     <Compile Include="ks_hexToZip.cs" />
     <Compile Include="ks_ihex_LoadToMem.cs" />
+    <Compile Include="lib\dfu\dfu_master.cs" />
+    <Compile Include="lib\dfu\dfu_transport_me.cs" />
+    <Compile Include="lib\dfu\master_emulator.cs" />
+    <Compile Include="lib\nordicsemi\dfu\dfu_transport.cs" />
+    <Compile Include="lib\nordicsemi\dfu\dfu_transport_ble.cs" />
+    <None Include="lib\nordicsemi\dfu\dfu_transport_rtrSOH.cs" />
+    <Compile Include="lib\nordicsemi\dfu\dfu_transport_serial.cs" />
     <Compile Include="my_dfu.cs" />
     <Compile Include="my_dfu_main.cs" />
-    <Compile Include="my_dfu_master.cs" />
     <Compile Include="my_dfu_program.cs" />
     <Compile Include="my_dfu_serial.cs" />
-    <Compile Include="my_dfu_transport.cs" />
-    <Compile Include="my_dfu_transport_ble.cs" />
-    <Compile Include="my_dfu_transport_me.cs" />
-    <Compile Include="my_dfu_transport_serial.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="my_dfu_util.cs" />
-    <Compile Include="my_master_emulator.cs" />
     <Compile Include="my_package.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

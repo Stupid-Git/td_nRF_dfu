@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using System.IO.Ports;
 
+using Nordicsemi; //DisconnectReason
+
 namespace nRFdfu_cs
 {
 #if false
@@ -110,7 +112,7 @@ namespace nRFdfu_cs
         */
 
 
-        MasterEmulator master;
+        //MasterEmulator master;
         String emulator_id;
 
         DfuMaster dfu_master;
@@ -123,8 +125,8 @@ namespace nRFdfu_cs
 
         //=====================================================================
         public DfuTransportMe(String peer_device_address, Int32 baud_rate, String emulator_id = "") //, own_address=None, bond_info=None):
+            : base() //super(DfuTransportMe, this).__init__()
         {
-            //TODO super(DfuTransportMe, this).__init__()
 
             dfu_master = new DfuMaster(peer_device_address, baud_rate);//, own_address, bond_info);
 
@@ -155,7 +157,7 @@ namespace nRFdfu_cs
             return this.waiting_for_notification;
         }
 
-        public void set_waiting_for_notification()
+        public override void set_waiting_for_notification()
         {
             this.waiting_for_notification = true;
         }
@@ -170,7 +172,8 @@ namespace nRFdfu_cs
             String  log_message;
             logger.debug(String.Format("Response received for Request Op Code = {0}, error_code = {1}", opcode, error_code));
 
-            String status_text = "TODO DfuErrorCodeBle.error_code_lookup(error_code)";
+            //String status_text = "TODO DfuErrorCodeBle.error_code_lookup(error_code)";
+            String status_text = DfuErrorCodeBle.error_code_lookup(error_code);
 
             if (opcode == DfuOpcodesBle.START_DFU)
                 log_message = String.Format("Response for 'Start DFU' received - Status: {0}", status_text);
@@ -251,7 +254,7 @@ namespace nRFdfu_cs
             */
         }
 
-        void disconnected_callback(int reason)
+        void disconnected_callback(DisconnectReason reason) //v_Fn_discon
         {
             logger.debug(String.Format("Device disconnected, reason: {0}", reason));
             /*

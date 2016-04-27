@@ -33,11 +33,14 @@ logging = logging.getLogger(__name__)
 
         public delegate void v_Fn_v();
         public delegate void v_Fn_B(Byte opcode, int error_code);
-        public delegate void v_Fn_i(int _xxxx);
+        //public delegate void v_Fn_i(int _xxxx);
+        public delegate void v_Fn_discon(DisconnectReason  value);
+        
 
         v_Fn_B response_callback;
         v_Fn_v notification_callback;
-        v_Fn_i disconnected_callback;
+        //public v_Fn_i disconnected_callback;
+        public v_Fn_discon disconnected_callback;
         
         BtUuid dfu_service_uuid;
         BtUuid dfu_packet_characteristic_uuid;
@@ -86,7 +89,7 @@ logging = logging.getLogger(__name__)
             this.response_callback = callback_function;
         }
 
-        public void set_disconnected_callback(v_Fn_i callback_function)
+        public void set_disconnected_callback(v_Fn_discon callback_function)
         {
             this.disconnected_callback = callback_function;
         }
@@ -176,6 +179,12 @@ logging = logging.getLogger(__name__)
                     logger.debug(String.Format("Number of bytes LSB = {0}", data_event.PipeData[1]));
                     logger.debug(String.Format("Number of bytes MSB = {0}", data_event.PipeData[2]));
                     this.notification_callback();
+                    //if (data_event.PipeData[2] == 71)
+                    //{
+                    //    logger.debug("hjkhjhjhkjhkjhjhjhjkhjkhkjh");
+                    //    logger.debug("hjkhjhjhkjhkjhjhjhjkhjkhkjh");
+                    //    logger.debug("hjkhjhjhkjhkjhjhjhjkhjkhkjh");
+                    //}
                 }
 
             } else {
@@ -201,15 +210,21 @@ logging = logging.getLogger(__name__)
         }
 
         //void meEv_OnDisconnected(object sender, ValueEventArgs<DisconnectReason> arguments)
-        void disconnected_handler(Object sender, ValueEventArgs<DisconnectReason> e)
+        public override void disconnected_handler(Object sender, ValueEventArgs<DisconnectReason> e)
         {
-        /*
-        # Set disconnect_event_expected to true to avoid logging "Error: Unexpected disconnection
-        # event!" when disconnecting for buttonless DFU.
-        this.disconnect_event_expected = true
-        super(DfuMaster, this).disconnected_handler(sender, e)
-        this.disconnected_callback(e.Value)
-        */
+            logger.info("dfu_master.cs: public override void disconnected_handler(..)");
+            //# Set disconnect_event_expected to true to avoid logging "Error: Unexpected disconnection
+            //# event!" when disconnecting for buttonless DFU.
+            this.disconnect_event_expected = true;
+            base.disconnected_handler(sender, e); //super(DfuMaster, this).disconnected_handler(sender, e);
+            this.disconnected_callback(e.Value);
+            /*
+            # Set disconnect_event_expected to true to avoid logging "Error: Unexpected disconnection
+            # event!" when disconnecting for buttonless DFU.
+            this.disconnect_event_expected = true
+            super(DfuMaster, this).disconnected_handler(sender, e)
+            this.disconnected_callback(e.Value)
+            */
         }
     }
 }

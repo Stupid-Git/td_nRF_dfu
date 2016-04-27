@@ -21,7 +21,7 @@ namespace nRFdfu_cs
         int num_of_errors = 0;
         //logger = TimestampLogger();
         public bool connected = false;
-        bool disconnect_event_expected = true;
+        public bool disconnect_event_expected = true;
         bool service_setup_done = true;
 
         DisconnectReason last_disconnect_reason = DisconnectReason.UnspecifiedError; // = -1
@@ -101,9 +101,11 @@ namespace nRFdfu_cs
         }
 
 
-        void disconnected_handler(Object sender, ValueEventArgs<DisconnectReason> e)//(sender, e)
+        public virtual void disconnected_handler(Object sender, ValueEventArgs<DisconnectReason> e)//(sender, e)
         {
             //""" Callback for the DLL if disconnect from peer device occur. """
+            logger.info("master_emulator.cs: public virtual void disconnected_handler(..)");
+
             this.connected = false;
             this.last_disconnect_reason = e.Value;
             if(this.disconnect_event_expected)
