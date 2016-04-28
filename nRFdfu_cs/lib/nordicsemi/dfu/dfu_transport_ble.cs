@@ -457,7 +457,7 @@ logger = logging.getLogger(__name__)
 
             if (NUM_OF_PACKETS_BETWEEN_NOTIF != 0)
             {
-                Byte [] packet = my_dfu_util.int16_to_bytes(NUM_OF_PACKETS_BETWEEN_NOTIF);
+                Byte [] packet = dfu_util.int16_to_bytes(NUM_OF_PACKETS_BETWEEN_NOTIF);
                 logger.debug("Send number of packets before device sends notification");
                 this.send_control_data(DfuOpcodesBle.REQ_PKT_RCPT_NOTIFICATION, packet);
             }

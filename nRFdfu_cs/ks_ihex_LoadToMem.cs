@@ -1050,8 +1050,6 @@ namespace nRFdfu_cs
     //=====================================================================
     class ks_ihex_LoadToMem
     {
-        //extern "C" UInt16 crc16_compute(Byte * p_data, UInt16 size, UInt16 * p_crc);
-
         static public Int32 W_ihex_LoadToMem(W_ihexMemImage_t pI, String filename)
         {
             int i;
@@ -1124,7 +1122,8 @@ namespace nRFdfu_cs
             {
                 pI.image_length++;
                 crc16 = 0xFFFF;
-                crc16 = my_dfu_util.crc16_compute(pI.image_array, (UInt16)pI.image_length, crc16);// = 0xffff);
+              //crc16 = dfu_crc16.crc16_compute(pI.image_array, (UInt16)pI.image_length, crc16);// = 0xffff);
+                crc16 = dfu_crc16.calc_crc16(pI.image_array, crc16);
                 Console.Write("                             image_length = {0} (0x{1:x}), data[{2:x04}] = 0x{3:x02},  crc16={4:x04} \n", pI.image_length, pI.image_length, pI.image_length - 1, pI.image_array[pI.image_length - 1], crc16);
             }
             //testing - start
@@ -1134,7 +1133,8 @@ namespace nRFdfu_cs
             // real
             pI.image_length = (pI.image_stop + 1) - pI.image_start; // Real
             crc16 = 0xFFFF;
-            crc16 = my_dfu_util.crc16_compute(pI.image_array, (UInt16)pI.image_length, crc16);// = 0xffff);
+          //crc16 = dfu_crc16.crc16_compute(pI.image_array, (UInt16)pI.image_length, crc16);// = 0xffff);
+            crc16 = dfu_crc16.calc_crc16(pI.image_array, crc16);
             pI.image_crc = crc16;
             Console.Write("\n");
             Console.Write("  (image_stop - image_start) image_length = {0} (0x{1:x}), data[{2:x04}] = 0x{3:x02},  crc16={4:x04} \n", pI.image_length, pI.image_length, pI.image_length-1, pI.image_array[pI.image_length-1], pI.image_crc);

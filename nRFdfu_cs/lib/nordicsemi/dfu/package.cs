@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace nRFdfu_cs
 {
-    
-//# Python standard library
-//import os
-//import tempfile
-//import shutil
 
-//# 3rd party libraries
-//from zipfile import ZipFile
-//import hashlib
+    //# Python standard library
+    //import os
+    //import tempfile
+    //import shutil
+
+    //# 3rd party libraries
+    //from zipfile import ZipFile
+    //import hashlib
 
 
-//# Nordic libraries
-//from nordicsemi.exceptions import NordicSemiException
-//from nordicsemi.dfu.nrfhex import *
-//from nordicsemi.dfu.init_packet import *
-//from nordicsemi.dfu.manifest import ManifestGenerator, Manifest
-//from nordicsemi.dfu.model import HexType, FirmwareKeys
-//from nordicsemi.dfu.crc16 import *
+    //# Nordic libraries
+    //from nordicsemi.exceptions import NordicSemiException
+    //from nordicsemi.dfu.nrfhex import *
+    //from nordicsemi.dfu.init_packet import *
+    //from nordicsemi.dfu.manifest import ManifestGenerator, Manifest
+    //from nordicsemi.dfu.model import HexType, FirmwareKeys
+    //from nordicsemi.dfu.crc16 import *
 
-//from signing import Signing
+    //from signing import Signing
 
 
     class Package

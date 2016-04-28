@@ -207,9 +207,9 @@ namespace nRFdfu_cs
 
 
             frame.Clear();
-            frame.AddRange( my_dfu_util.int32_to_bytes(DFU_INIT_PACKET) );
+            frame.AddRange( dfu_util.int32_to_bytes(DFU_INIT_PACKET) );
             frame.AddRange( init_packet );
-            frame.AddRange( my_dfu_util.int16_to_bytes(0x0000) ); // # Padding required
+            frame.AddRange( dfu_util.int16_to_bytes(0x0000) ); // # Padding required
 
             //my_dfu_util.buf32_print("malloc_frame_DFU_INIT_PACKET", frame.ToArray());
 
@@ -235,12 +235,12 @@ namespace nRFdfu_cs
             List<Byte> frame = new List<Byte>();
 
             frame.Clear();
-            frame.AddRange( my_dfu_util.int32_to_bytes(DFU_START_PACKET) );//, 4);
-            frame.AddRange( my_dfu_util.int32_to_bytes((UInt32)program_mode) );//, 4);      //hex_type    
+            frame.AddRange( dfu_util.int32_to_bytes(DFU_START_PACKET) );//, 4);
+            frame.AddRange( dfu_util.int32_to_bytes((UInt32)program_mode) );//, 4);      //hex_type    
             //frame.AddRange( DfuTransport.create_image_size_packet(softdevice_size, bootloader_size, app_size) );
-            frame.AddRange( my_dfu_util.int32_to_bytes((UInt32)softdevice_size) );//, 4 );  // size of SoftDevice    
-            frame.AddRange( my_dfu_util.int32_to_bytes((UInt32)bootloader_size) );//, 4 );  // size of BootLoader
-            frame.AddRange( my_dfu_util.int32_to_bytes((UInt32)app_size) );//, 4 );         // size of Application
+            frame.AddRange( dfu_util.int32_to_bytes((UInt32)softdevice_size) );//, 4 );  // size of SoftDevice    
+            frame.AddRange( dfu_util.int32_to_bytes((UInt32)bootloader_size) );//, 4 );  // size of BootLoader
+            frame.AddRange( dfu_util.int32_to_bytes((UInt32)app_size) );//, 4 );         // size of Application
 
 
             //my_dfu_util.buf32_print("malloc_frame_DFU_START_PACKET", frame.ToArray());
@@ -292,7 +292,7 @@ namespace nRFdfu_cs
 
                 lump = new Byte[4 + lump_size];
 
-                lump4 = my_dfu_util.int32_to_bytes(DFU_DATA_PACKET);
+                lump4 = dfu_util.int32_to_bytes(DFU_DATA_PACKET);
                 int k;
                 for( k=0; k<4; k++)
                     lump[k] = lump4[k];
@@ -328,7 +328,7 @@ namespace nRFdfu_cs
             //~~~~~~~~~~~~~~~~~~~~~~~~
 
             //# Send data stop packet
-            Byte [] frame = my_dfu_util.int32_to_bytes(DFU_STOP_DATA_PACKET);
+            Byte [] frame = dfu_util.int32_to_bytes(DFU_STOP_DATA_PACKET);
 
             //my_dfu_util.buf32_print("malloc_frame_DFU_STOP_DATA_PACKET", frame);
 
@@ -443,7 +443,7 @@ namespace nRFdfu_cs
             //RESUME_WORK
             //logger.debug("PC <- target: {0}".format(binascii.hexlify(uart_buffer)))
             //TODO buf32_print("\nController_get_ack_nr", &uart_buffer);
-            data = my_dfu_util.decode_esc_chars(uart_buffer.ToArray());
+            data = dfu_util.slip_decode_esc_chars(uart_buffer.ToArray());
 
             // print "non-slip data ", [data]
             return( (Byte)( (data[1] >> 3) & 0x07) );
@@ -510,7 +510,7 @@ TODO*/
 
             temp_data.Clear();
 
-            temp_data.AddRange(my_dfu_util.slip_parts_to_four_bytes( (UInt32)(HciPacket_sequence_number),
+            temp_data.AddRange(dfu_util.slip_parts_to_four_bytes( (UInt32)(HciPacket_sequence_number),
                                                                      DATA_INTEGRITY_CHECK_PRESENT,
                                                                      RELIABLE_PACKET,
                                                                      HCI_PACKET_TYPE,
@@ -520,14 +520,14 @@ TODO*/
             temp_data.AddRange( data_in );
 
             //# Add escape characters
-            //UInt16 crc = crc16.calc_crc16(temp_data.ToArray, crc=0xffff);
-            UInt16 crc = my_dfu_util.crc16_compute(temp_data.ToArray(), (UInt16)temp_data.Count, crc = 0xffff);
+          //UInt16 crc = dfu_crc16.crc16_compute(temp_data.ToArray(), (UInt16)temp_data.Count, crc = 0xffff);
+            UInt16 crc = dfu_crc16.calc_crc16(temp_data.ToArray(), crc=0xffff);
             
 
             temp_data.Add( (Byte)( (crc>>0) & 0x00FF) );
             temp_data.Add( (Byte)( (crc>>8) & 0x00FF) );
 
-            Byte[] s_data = my_dfu_util.slip_encode_esc_chars(temp_data.ToArray());
+            Byte[] s_data = dfu_util.slip_encode_esc_chars(temp_data.ToArray());
 
             data_out.Clear();
             data_out.Add(0xc0);

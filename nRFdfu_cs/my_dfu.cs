@@ -88,13 +88,13 @@ namespace nRFdfu_cs
 
     //logger = logging.getLogger(__name__)
 
-    public class HexType
+/* model.c   public class HexType
     {
-        public static int  /*HexType_*/SOFTDEVICE = 1;
-        public static int  /*HexType_*/BOOTLOADER = 2;
-        public static int  /*HexType_*/SD_BL = 3;
-        public static int  /*HexType_*/APPLICATION = 4;
-    }
+        public static int  SOFTDEVICE = 1;
+        public static int  BOOTLOADER = 2;
+        public static int  SD_BL = 3;
+        public static int  APPLICATION = 4;
+    }*/
 
     
     public class FakeManifest

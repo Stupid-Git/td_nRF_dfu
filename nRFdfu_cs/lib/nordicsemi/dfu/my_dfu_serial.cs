@@ -544,7 +544,7 @@ namespace nRFdfu_cs
             //uart_buffer.length = posC0_1 - posC0_0;
 
             //my_dfu_util.buf32_print("get_ack_nr_UW_SLIP", slip_buf.ToArray());
-            Byte[] data = my_dfu_util.decode_esc_chars(slip_buf.ToArray());
+            Byte[] data = dfu_util.slip_decode_esc_chars(slip_buf.ToArray());
             //my_dfu_util.buf32_print("get_ack_nr_UW_SLIP --Non SLIP data ---", data);
 
             /*

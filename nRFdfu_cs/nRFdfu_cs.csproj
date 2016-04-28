@@ -82,6 +82,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormCreateZip.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCreateZip.Designer.cs">
+      <DependentUpon>FormCreateZip.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormRTR500BLE.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,20 +105,28 @@
     <Compile Include="lib\dfu\dfu_master.cs" />
     <Compile Include="lib\dfu\dfu_transport_me.cs" />
     <Compile Include="lib\dfu\master_emulator.cs" />
+    <Compile Include="lib\nordicsemi\dfu\crc16.cs" />
     <Compile Include="lib\nordicsemi\dfu\dfu_transport.cs" />
     <Compile Include="lib\nordicsemi\dfu\dfu_transport_ble.cs" />
     <None Include="lib\nordicsemi\dfu\dfu_transport_rtrSOH.cs" />
     <Compile Include="lib\nordicsemi\dfu\dfu_transport_serial.cs" />
+    <Compile Include="lib\nordicsemi\dfu\model.cs" />
+    <Compile Include="lib\nordicsemi\dfu\my_dfu_serial.cs" />
+    <None Include="lib\nordicsemi\dfu\package.cs" />
+    <Compile Include="lib\nordicsemi\dfu\nrfhex.cs" />
+    <Compile Include="lib\nordicsemi\dfu\util.cs" />
+    <Compile Include="lib\nordicsemi\__main__.cs" />
+    <Compile Include="myCreateZip.cs" />
     <Compile Include="my_dfu.cs" />
     <Compile Include="my_dfu_main.cs" />
     <Compile Include="my_dfu_program.cs" />
-    <Compile Include="my_dfu_serial.cs" />
-    <Compile Include="my_dfu_util.cs" />
-    <Compile Include="my_package.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCreateZip.resx">
+      <DependentUpon>FormCreateZip.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRTR500BLE.resx">
       <DependentUpon>FormRTR500BLE.cs</DependentUpon>

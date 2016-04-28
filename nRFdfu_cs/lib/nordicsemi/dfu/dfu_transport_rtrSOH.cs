@@ -668,7 +668,7 @@ static int get_ack_nr(DfuTransport_t *P)
     //read until you get a new C0
     //RESUME_WORK
     buf32_print("\nController_get_ack_nr", &uart_buffer);
-    data = my_dfu_util.decode_esc_chars(&uart_buffer);
+    data = dfu_util.slip_decode_esc_chars(&uart_buffer);
 
     /*
     // Remove 0xC0 at start and beginning
